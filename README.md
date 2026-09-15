@@ -2,6 +2,8 @@
 
 nemu records foreground application identity and time on macOS, keeps a durable local buffer, and syncs hourly to a paired browser dashboard.
 
+[Open the live dashboard](https://d1z5giweildfo4.cloudfront.net/) — pair it with the macOS agent to view your own activity.
+
 > There are plans to support Windows and Linux as well as create a browser extension in Chrome, Safari etc. to differentiate websites e.g. Youtube, Wikipedia, or even ansonnchan.dev 
 
 ## Video Demo
