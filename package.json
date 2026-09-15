@@ -1,0 +1,1 @@
+{"name":"nemu","private":true,"workspaces":["backend","web"],"scripts":{"test":"npm run test --workspaces --if-present","build":"npm run build --workspaces","check":"npm run check --workspaces"}}
