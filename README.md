@@ -2,7 +2,9 @@
 
 nemu records foreground application identity and time on macOS, keeps a durable local buffer, and syncs hourly to a paired browser dashboard.
 
-[Open the live dashboard](https://d1z5giweildfo4.cloudfront.net/) — pair it with the macOS agent to view your own activity.
+[Open the live dashboard](https://d1z5giweildfo4.cloudfront.net/) 
+
+[Open the landing page](https://nemu-landing.vercel.app) 
 
 ## Video Demo
 
