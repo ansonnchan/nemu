@@ -89,14 +89,6 @@ function Sidebar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) 
           </button>
         ))}
       </nav>
-      <div className="sidebar-bottom">
-        <p>
-          small steps
-          <br />
-          still make
-          <br />a brighter tomorrow.
-        </p>
-      </div>
     </aside>
   );
 }
