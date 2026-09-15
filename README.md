@@ -6,9 +6,7 @@ nemu records foreground application identity and time on macOS (for now), keeps 
 
 The web experience uses warm ivory surfaces, soft sage accents, and dedicated anime artwork in the hero. New devices begin with an empty journal. There is no demo dataset.
 
-<!-- Screenshot slot: replace this artwork with a screenshot of your own empty dashboard. -->
-
-![A cozy workspace at sunset, the dashboard’s hero illustration](web/public/assets/nemu-hero-anime-reference.png)
+![nemu dashboard syncing a recorded day](web/public/assets/nemu-demo.gif)
 
 ## What v1 implements
 
