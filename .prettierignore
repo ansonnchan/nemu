@@ -1,7 +1,7 @@
 node_modules
 dist
 .scratch
-AGENTS.md
-implementation.md
-architecture.md
+/AGENTS.md
+/implementation.md
+/architecture.md
 package-lock.json

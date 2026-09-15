@@ -1,0 +1,36 @@
+name: checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  typescript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform -chdir=infrastructure init -backend=false
+      - run: terraform -chdir=infrastructure fmt -check
+      - run: terraform -chdir=infrastructure validate
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: agent/go.mod
+          cache: false
+      - run: go test -race ./...
+        working-directory: agent
+      - run: go vet ./...
+        working-directory: agent
+      - run: go build -o nemu ./cmd/nemu
+        working-directory: agent

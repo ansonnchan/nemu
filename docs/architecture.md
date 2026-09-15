@@ -21,14 +21,14 @@ Five minutes of inactivity retroactively replaces the unsettled tail with idle t
 
 One table, no secondary indexes. All access is by known partition key and optional sort-key range.
 
-| Access | PK | SK |
-| --- | --- | --- |
-| Authenticate device; get last sync | DEVICE#id | META |
-| Redeem one-time token | PAIR#sha256(token) | TOKEN |
-| Authenticate browser | BROWSER#sha256(token) | SESSION |
-| Check batch receipt | DEVICE#id | BATCH#batch-id |
-| Recompute a day from retained intervals | DEVICE#id | INTERVAL#UTC-start#id |
-| Read/write derived calendar summary | DEVICE#id | DAY#timezone#YYYY-MM-DD |
+| Access                                  | PK                    | SK                      |
+| --------------------------------------- | --------------------- | ----------------------- |
+| Authenticate device; get last sync      | DEVICE#id             | META                    |
+| Redeem one-time token                   | PAIR#sha256(token)    | TOKEN                   |
+| Authenticate browser                    | BROWSER#sha256(token) | SESSION                 |
+| Check batch receipt                     | DEVICE#id             | BATCH#batch-id          |
+| Recompute a day from retained intervals | DEVICE#id             | INTERVAL#UTC-start#id   |
+| Read/write derived calendar summary     | DEVICE#id             | DAY#timezone#YYYY-MM-DD |
 
 A batch has at most 90 intervals, each at most 24 hours. Raw S3 is written before a transaction atomically creates the receipt and intervals and updates last sync. Failed transactions leave harmless raw objects; retries use the same object key and batch identity. A reused batch ID with a different content hash is rejected. Intervals must follow the device’s previously accepted end timestamp, preventing overlapping activity across batches. Batch receipt and interval TTLs are 30 days; expiry is checked when querying. Retention begins on ingestion, so a long offline queue can still upload its original dates. The latest batch ID/hash also stays on the device metadata so an acknowledgment lost for more than 30 days can be retried safely. Daily summaries have 365-day TTL and are a cache, never the source of truth. Timezone-specific summaries are recomputed from retained intervals when requested. Beyond raw retention only previously computed aggregate summaries are available; detailed timelines are not retained in the summary cache.
 
@@ -43,3 +43,21 @@ Thirty days of raw records allows debugging/recomputation without an indefinite 
 ## Known limitations and v2
 
 Long videos without input can appear idle. Foreground sampling may miss transitions shorter than the sampling interval. An offline device cannot update the hosted dashboard. Historical timezone changes cannot reconstruct unretained raw activity. V2 is limited to a Chrome extension, Windows support, and Linux support.
+
+## API routes
+
+| Method | Route                                         | Authorization                                          |
+| ------ | --------------------------------------------- | ------------------------------------------------------ |
+| POST   | `/api/devices`                                | New random device ID and secret; exact retry supported |
+| POST   | `/api/pairing`                                | Device bearer credential                               |
+| POST   | `/api/pair`                                   | One-time token and matching browser Origin             |
+| POST   | `/api/batches`                                | Device bearer credential; body device must match       |
+| GET    | `/api/day?date=YYYY-MM-DD&timezone=IANA_ZONE` | Device-scoped browser cookie                           |
+| POST   | `/api/logout`                                 | Clears the browser cookie                              |
+
+The wire schema is strict and versioned. The TypeScript validator in `backend/src/model.ts` and Go JSON types in `agent/internal/journal` define version 1. A session fragment includes `id`, `session_id`, `kind`, `app_name`, `bundle_id`, UTC `started_at` / `ended_at`, and `end_reason`. Idle records have empty app fields. Duration is derived from UTC endpoints rather than accepting a redundant client-supplied total.
+
+## Native and cloud API references
+
+- [Apple NSWorkspace](https://developer.apple.com/documentation/appkit/nsworkspace) for foreground identity and lifecycle notifications.
+- [DynamoDB transactional writes](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_TransactWriteItems.html) for atomic pairing consumption and batch acceptance. A maximum 90-interval batch leaves room for its receipt and metadata within the transaction action limit.
