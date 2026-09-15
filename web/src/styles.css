@@ -2,7 +2,7 @@
 :root {
   font-family: 'DM Sans Variable', sans-serif;
   color: #493a35;
-  background: #f8f4ef;
+  background: #f8f2eb;
   font-synthesis: none;
   font-weight: 400;
   --ink: #3d2d29;
@@ -83,7 +83,7 @@ svg {
   display: grid;
   grid-template-columns: 202px minmax(0, 1fr);
   min-height: 100vh;
-  background: radial-gradient(ellipse at 65% 35%, #faf7f3 0, #f8f4ef 65%, #f2ebe3 100%);
+  background: radial-gradient(ellipse at 64% 32%, #fbf7f1 0, #f7f1e9 68%, #efe5da 100%);
 }
 .sidebar {
   position: sticky;
@@ -91,7 +91,7 @@ svg {
   height: 100vh;
   min-height: 620px;
   border-right: 1px solid #e9dfd5;
-  background: linear-gradient(110deg, #f0e8dd88, #faf7f2 53%, #f6f0e9);
+  background: linear-gradient(105deg, #eee3d7aa, #faf6f0 52%, #f5ede4);
   padding: 35px 24px 23px;
   display: flex;
   flex-direction: column;
@@ -122,9 +122,9 @@ svg {
   display: block;
   margin-top: 9px;
   font:
-    italic 11px/1.9 'Lora Variable',
-    Georgia,
-    serif;
+    13px/1.65 'Bradley Hand',
+    'Segoe Print',
+    cursive;
   letter-spacing: 1px;
   color: #8e7d70;
 }
@@ -165,23 +165,23 @@ svg {
 }
 .sidebar-bottom > p {
   font:
-    italic 14px/1.8 'Lora Variable',
-    Georgia,
-    serif;
+    15px/1.55 'Bradley Hand',
+    'Segoe Print',
+    cursive;
   color: #9c8575;
-  margin-bottom: 236px;
+  margin-bottom: 316px;
   transform: rotate(-5deg);
 }
 .sidebar-art {
   position: absolute;
-  left: -140px;
-  bottom: 44px;
-  width: 430px;
-  height: 238px;
+  left: -37px;
+  bottom: 42px;
+  width: calc(100% + 74px);
+  height: 308px;
   object-fit: cover;
-  object-position: left bottom;
-  opacity: 0.58;
-  mask-image: linear-gradient(0deg, #000 30%, transparent 99%);
+  object-position: center 70%;
+  opacity: 0.98;
+  mask-image: linear-gradient(0deg, #000 0 78%, transparent 100%);
   pointer-events: none;
 }
 .private-label {
@@ -211,7 +211,7 @@ main {
 }
 .hero {
   position: relative;
-  height: 328px;
+  height: 318px;
   isolation: isolate;
   overflow: hidden;
   background: #f9f5ef;
@@ -220,24 +220,24 @@ main {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 73%;
+  width: 64%;
   height: 100%;
   object-fit: cover;
-  object-position: right bottom;
-  opacity: 0.9;
+  object-position: center center;
+  opacity: 1;
   z-index: -2;
-  mask-image: linear-gradient(90deg, transparent 0, #000 23%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 19%);
 }
 .hero:after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #faf7f2 0, #faf7f2d9 23%, #faf7f250 39%, transparent 57%);
+  background: linear-gradient(90deg, #faf7f2 0, #faf7f2 25%, #faf7f2b8 34%, transparent 48%);
   z-index: -1;
   pointer-events: none;
 }
 .hero-copy {
-  padding: 61px 46px 0;
+  padding: 57px 46px 0;
   width: max-content;
   max-width: 100%;
 }
@@ -256,16 +256,19 @@ main {
   color: #cfa458;
 }
 .greeting-sub {
-  margin-top: 0;
+  margin-top: 1px;
+  font-family: 'Bradley Hand', 'Segoe Print', cursive;
+  font-size: 16px;
+  letter-spacing: 0.2px;
 }
 h1 {
   font-family: 'Lora Variable', Georgia, serif;
-  font-size: 86px;
+  font-size: 80px;
   font-weight: 500;
   line-height: 1.05;
   letter-spacing: -4px;
   color: var(--ink);
-  margin-top: 22px;
+  margin-top: 17px;
   display: flex;
   align-items: baseline;
   gap: 16px;
@@ -279,8 +282,9 @@ h1 > span {
 }
 .date-line {
   color: #8c746b;
-  font-size: 15px;
-  margin-top: 7px;
+  font-size: 14px;
+  margin-top: 6px;
+  text-transform: lowercase;
 }
 .hero-status {
   position: absolute;
@@ -355,31 +359,31 @@ h1 > span {
 }
 /* Pairing sits above these cards, so their position no longer depends on account setup. */
 .content {
-  padding: 0 23px 0;
+  padding: 0 21px;
 }
 .metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 .metric {
   position: relative;
   min-width: 0;
-  min-height: 194px;
-  background: linear-gradient(135deg, #fffdfc, #fffefd 70%, #fcf9f5);
-  border: 1px solid #eee5dd;
-  border-radius: 13px;
-  padding: 21px 24px 23px;
-  box-shadow: 0 5px 22px #78594304;
+  min-height: 176px;
+  background: linear-gradient(135deg, #fffdf9, #fffdfa 70%, #faf5ef);
+  border: 1px solid #eadfd5;
+  border-radius: 11px;
+  padding: 18px 23px 19px;
+  box-shadow: 0 4px 18px #78594305;
 }
 .metric-top {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 .metric-icon {
-  height: 44px;
-  width: 44px;
-  border-radius: 16px;
+  height: 42px;
+  width: 42px;
+  border-radius: 14px;
   display: grid;
   place-items: center;
 }
@@ -411,20 +415,20 @@ h1 > span {
 }
 .metric-value {
   font:
-    500 37px/1.15 'Lora Variable',
+    500 35px/1.15 'Lora Variable',
     Georgia,
     serif;
   letter-spacing: -1.4px;
   color: var(--ink);
   display: block;
-  margin-top: 8px;
+  margin-top: 5px;
   font-variant-numeric: tabular-nums;
 }
 .metric p {
   font-size: 12px;
   line-height: 1.5;
   color: #8b7d73;
-  margin-top: 7px;
+  margin-top: 5px;
 }
 .detail-grid {
   display: grid;
@@ -434,13 +438,13 @@ h1 > span {
 .left-column {
   display: flex;
   flex-direction: column;
-  gap: 17px;
+  gap: 14px;
   min-width: 0;
 }
 .panel {
-  background: linear-gradient(120deg, #fffefd, #fffdfb);
-  border: 1px solid #eee5dd;
-  border-radius: 13px;
+  background: linear-gradient(120deg, #fffdf9, #fefbf7);
+  border: 1px solid #eadfd5;
+  border-radius: 11px;
   overflow: hidden;
   box-shadow: 0 5px 20px #78594303;
 }
@@ -449,7 +453,7 @@ h1 > span {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 21px 25px 17px;
+  padding: 19px 24px 14px;
 }
 .panel-heading h2 {
   font-size: 23px;
@@ -500,7 +504,7 @@ h1 > span {
 }
 /* A real ranked table and quiet progress bars match the reference without inventing data. */
 .apps-panel {
-  min-height: 320px;
+  min-height: 316px;
   display: flex;
   flex-direction: column;
 }
@@ -540,7 +544,7 @@ h1 > span {
 .apps-table tbody td,
 .apps-table tbody th {
   border-bottom: 1px solid #f1eae3;
-  padding: 13px 0;
+  padding: 11px 0;
   font-weight: 400;
   text-align: left;
   overflow-wrap: anywhere;
@@ -584,8 +588,9 @@ h1 > span {
   background: #b9b39d;
 }
 .apps-table .table-empty {
+  position: relative;
   text-align: center;
-  padding: 46px 10px 43px;
+  padding: 27px 10px 22px;
   border: 0;
 }
 .table-empty > svg {
@@ -607,6 +612,25 @@ h1 > span {
   line-height: 1.8;
   margin-top: 6px;
 }
+.empty-apps-placeholder {
+  display: grid;
+  gap: 7px;
+  width: min(330px, 76%);
+  margin: 17px auto 0;
+}
+.empty-apps-placeholder i {
+  display: block;
+  height: 7px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #eadfd6 0 36%, #f0ebe5 36% 100%);
+  opacity: 0.72;
+}
+.empty-apps-placeholder i:nth-child(2) {
+  width: 86%;
+}
+.empty-apps-placeholder i:nth-child(3) {
+  width: 70%;
+}
 .panel-foot {
   display: flex;
   align-items: center;
@@ -625,7 +649,7 @@ h1 > span {
 .timeline-panel {
   display: flex;
   flex-direction: column;
-  min-height: 493px;
+  min-height: 488px;
 }
 .timeline {
   list-style: none;
@@ -708,7 +732,7 @@ h1 > span {
   margin: 20px 26px 0 35px;
   padding: 34px 20px 40px 38px;
   border-left: 1px solid #dfd4c8;
-  min-height: 210px;
+  min-height: 230px;
 }
 .empty-timeline:before,
 .empty-timeline:after {
@@ -745,6 +769,25 @@ h1 > span {
   width: 4px;
   height: 4px;
 }
+.empty-timeline-placeholder {
+  display: grid;
+  gap: 8px;
+  width: min(310px, 88%);
+  margin-top: 18px;
+}
+.empty-timeline-placeholder i {
+  display: block;
+  height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f1e9e2 0 68%, #f5f0ea 68% 100%);
+  opacity: 0.72;
+}
+.empty-timeline-placeholder i:nth-child(2) {
+  width: 88%;
+}
+.empty-timeline-placeholder i:nth-child(3) {
+  width: 72%;
+}
 .timeline-footer {
   display: flex;
   justify-content: center;
@@ -759,24 +802,24 @@ h1 > span {
 .reflection {
   display: flex;
   align-items: center;
-  gap: 21px;
-  height: 156px;
+  gap: 20px;
+  height: 158px;
   overflow: hidden;
   border: 1px solid #e9dfd3;
   border-radius: 12px;
-  padding: 11px;
+  padding: 10px;
   background: linear-gradient(100deg, #f7f0e7, #fcf9f4);
   box-shadow: 0 3px 12px #78594303;
 }
 .reflection > img {
-  width: 42%;
+  width: 43%;
   height: 100%;
   object-fit: cover;
-  object-position: 76% bottom;
+  object-position: center 53%;
   border-radius: 6px;
-  opacity: 0.86;
+  opacity: 1;
 }
-.reflection > div {
+.reflection-copy {
   padding-right: 8px;
 }
 .reflection h2 {
@@ -803,6 +846,16 @@ h1 > span {
   height: 1px;
   width: 100px;
   background: #ded2c3;
+}
+.reflection-note {
+  margin-left: auto;
+  padding: 0 15px 0 2px;
+  font:
+    14px/1.45 'Bradley Hand',
+    'Segoe Print',
+    cursive;
+  color: #a58a7a;
+  transform: rotate(-5deg);
 }
 .footer {
   display: flex;
@@ -856,7 +909,7 @@ h1 > span {
   font-size: 68px;
 }
 .settings-hero .hero-art {
-  opacity: 0.65;
+  opacity: 0.82;
 }
 .settings-content {
   padding-top: 4px;
@@ -1031,26 +1084,26 @@ dialog p {
 /* Scale the composition down rather than squeezing a desktop table into a narrow viewport. */
 @media (min-width: 1600px) {
   .hero {
-    height: 360px;
+    height: 318px;
   }
   .hero-copy {
-    padding-top: 68px;
+    padding-top: 57px;
   }
   .hero h1 {
-    font-size: 96px;
+    font-size: 82px;
   }
   .metric {
-    min-height: 209px;
-    padding: 24px 27px;
+    min-height: 178px;
+    padding: 19px 23px;
   }
   .metric-value {
-    font-size: 43px;
+    font-size: 37px;
   }
   .metric h2 {
-    font-size: 16px;
+    font-size: 14px;
   }
   .metric p {
-    font-size: 13px;
+    font-size: 12px;
   }
   .content {
     padding-left: 28px;
@@ -1061,16 +1114,16 @@ dialog p {
     gap: 18px;
   }
   .apps-panel {
-    min-height: 345px;
+    min-height: 316px;
   }
   .reflection {
-    height: 164px;
+    height: 158px;
   }
   .timeline-panel {
-    min-height: 526px;
+    min-height: 488px;
   }
   .hero-art {
-    width: 75%;
+    width: 64%;
   }
 }
 @media (max-width: 1150px) {
@@ -1102,7 +1155,7 @@ dialog p {
   }
   .hero-art {
     width: 77%;
-    opacity: 0.8;
+    opacity: 1;
   }
   .hero-status {
     top: 19px;
@@ -1113,8 +1166,8 @@ dialog p {
     padding: 0 18px;
   }
   .metric {
-    padding: 20px 17px;
-    min-height: 196px;
+    padding: 18px 17px;
+    min-height: 176px;
   }
   .metric-value {
     font-size: 32px;
@@ -1214,7 +1267,7 @@ dialog p {
   }
   .hero-art {
     width: 86%;
-    opacity: 0.65;
+    opacity: 0.9;
     mask-image: linear-gradient(90deg, transparent 8%, #000 45%);
   }
   .metrics {
@@ -1222,7 +1275,7 @@ dialog p {
     gap: 12px;
   }
   .metric {
-    min-height: 180px;
+    min-height: 174px;
     padding: 18px 21px;
   }
   .metric-value {
@@ -1255,6 +1308,9 @@ dialog p {
   .reflection p {
     font-size: 12px;
   }
+  .reflection-note {
+    display: none;
+  }
   .timeline {
     padding: 0 22px 22px;
   }
@@ -1283,7 +1339,7 @@ dialog p {
   }
   .sidebar-bottom > p {
     font-size: 12px;
-    margin-bottom: 205px;
+    margin-bottom: 282px;
   }
   .footer {
     font-size: 9px;
@@ -1342,7 +1398,7 @@ dialog p {
   }
   .hero-art {
     width: 100%;
-    opacity: 0.53;
+    opacity: 0.78;
     mask-image: linear-gradient(90deg, transparent, #000 60%);
   }
   .hero:after {
@@ -1386,7 +1442,7 @@ dialog p {
   }
   .metric {
     padding: 18px 16px;
-    min-height: 185px;
+    min-height: 170px;
   }
   .metric-icon {
     height: 39px;

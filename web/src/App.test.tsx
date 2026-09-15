@@ -34,10 +34,19 @@ test('unpaired state offers a real pairing workflow', async () => {
 });
 test('paired empty state contains no fabricated activity', async () => {
   respond(empty);
-  render(<App />);
+  const { container } = render(<App />);
   expect(await screen.findByText('nemu is listening quietly.')).toBeInTheDocument();
   expect(screen.getAllByText('0m')).toHaveLength(3);
   expect(screen.queryByRole('button', { name: 'Sync now' })).not.toBeInTheDocument();
+  expect(
+    Array.from(container.querySelectorAll('img'), (image) => image.getAttribute('src')),
+  ).toEqual(
+    expect.arrayContaining([
+      '/assets/nemu-hero-anime-reference.png',
+      '/assets/nemu-reflection-anime-reference.png',
+      '/assets/nemu-sidebar-anime-reference.png',
+    ]),
+  );
 });
 test('populated day renders uploaded metrics and idle deliberately', async () => {
   respond({

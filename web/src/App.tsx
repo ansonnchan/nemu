@@ -39,9 +39,20 @@ function pairOnce() {
     body: JSON.stringify({ token: initialPair }),
   }));
 }
-// Keep supporting artwork replaceable without changing the dashboard layout.
-function Illustration({ className = '' }: { className?: string }) {
-  return <img className={className} src="/assets/quiet-desk.svg" alt="" aria-hidden="true" />;
+const artwork = {
+  hero: '/assets/nemu-hero-anime-reference.png',
+  reflection: '/assets/nemu-reflection-anime-reference.png',
+  sidebar: '/assets/nemu-sidebar-anime-reference.png',
+} as const;
+// Each region uses the supplied reference crop while remaining decorative to assistive technology.
+function Illustration({
+  kind,
+  className = '',
+}: {
+  kind: keyof typeof artwork;
+  className?: string;
+}) {
+  return <img className={className} src={artwork[kind]} alt="" aria-hidden="true" />;
 }
 function Brand({ onHome }: { onHome: () => void }) {
   return (
@@ -60,7 +71,7 @@ function Brand({ onHome }: { onHome: () => void }) {
       </span>
       <small>
         a quieter day.
-        <br />a little room to breathe.
+        <br />a brighter you.
       </small>
     </a>
   );
@@ -89,8 +100,13 @@ function Sidebar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) 
         ))}
       </nav>
       <div className="sidebar-bottom">
-        <p>one day at a time.</p>
-        <Illustration className="sidebar-art" />
+        <p>
+          small steps
+          <br />
+          still make
+          <br />a brighter tomorrow.
+        </p>
+        <Illustration kind="sidebar" className="sidebar-art" />
         <div className="private-label">
           <ShieldCheck size={14} /> private by nature
         </div>
@@ -277,6 +293,11 @@ function TopApps({ day, onAll }: { day?: Day; onAll: () => void }) {
                   <Monitor size={22} strokeWidth={1.3} aria-hidden="true" />
                   <h3>Your everyday apps, gathered here.</h3>
                   <p>App names and time will appear after a sync.</p>
+                  <span className="empty-apps-placeholder" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
                 </td>
               </tr>
             )}
@@ -360,6 +381,11 @@ function Timeline({
             <span className="small-dot" />{' '}
             {day?.archived ? 'Saved daily summary' : 'No activity recorded yet'}
           </span>
+          <span className="empty-timeline-placeholder" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
         </div>
       )}
       <div className="timeline-footer">
@@ -371,15 +397,24 @@ function Timeline({
 function Reflection() {
   return (
     <section className="reflection">
-      <Illustration />
-      <div>
-        <h2>a little room to reflect.</h2>
-        <p>Your day, remembered softly.</p>
+      <Illustration kind="reflection" />
+      <div className="reflection-copy">
+        <h2>another day, well spent.</h2>
+        <p>
+          It’s not about doing more,
+          <br />
+          but about being present.
+        </p>
         <span className="reflection-leaf">
           <i />
           <Leaf size={16} />
         </span>
       </div>
+      <p className="reflection-note">
+        same human,
+        <br />
+        brighter tomorrow.
+      </p>
     </section>
   );
 }
@@ -587,7 +622,7 @@ export function App() {
       <Sidebar page={page} setPage={navigate} />
       <main id="main">
         <header className={`hero ${page === 'settings' ? 'settings-hero' : ''}`}>
-          <Illustration className="hero-art" />
+          <Illustration kind="hero" className="hero-art" />
           <div className="hero-status">
             <span className={`small-dot ${paired ? 'connected' : ''}`} />
             <span>

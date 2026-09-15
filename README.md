@@ -4,11 +4,11 @@ nemu records foreground application identity and time on macOS (for now), keeps 
 
 ## A quieter dashboard
 
-The web experience uses warm ivory surfaces, soft sage accents, and a replaceable desk illustration. New devices begin with an empty journal. There is no demo dataset.
+The web experience uses warm ivory surfaces, soft sage accents, and dedicated anime artwork for the hero, reflection card, and sidebar. New devices begin with an empty journal. There is no demo dataset.
 
-<!-- Screenshot slot: replace this illustration with a screenshot of your own empty dashboard. -->
+<!-- Screenshot slot: replace this artwork with a screenshot of your own empty dashboard. -->
 
-![A quiet desk at sunset, the dashboard’s supporting illustration](web/public/assets/quiet-desk.svg)
+![A cozy workspace at sunset, the dashboard’s hero illustration](web/public/assets/nemu-hero-anime-reference.png)
 
 ## What v1 implements
 
@@ -137,7 +137,7 @@ Detailed cloud activity expires after 30 days from ingestion. Saved aggregate su
 
 Go · Objective-C/cgo · React · TypeScript · Vite · Lambda · API Gateway · S3 · DynamoDB · CloudFront · Terraform.
 
-Fonts are bundled locally. The supporting desk artwork is an SVG asset in `web/public/assets`; replace it through the `Illustration` component when licensed character artwork is available.
+Fonts and the three region-specific dashboard illustrations are bundled locally under `web/public/assets`.
 
 ## V2
 
