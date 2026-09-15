@@ -18,7 +18,7 @@ The web experience uses warm ivory surfaces, soft sage accents, and a replaceabl
 - Hourly uploads, manual **Sync now** in the menu bar, and retry-safe batch identities.
 - Device credentials in Keychain and short-lived, single-use browser pairing. No email or password.
 - AWS ingestion, private S3 raw archives, DynamoDB records and derived calendar summaries.
-- A React dashboard with Today, History, Settings, top apps, timeline, and loading/empty/error states.
+- A React dashboard with Today and Settings, top apps, timeline, and loading/empty/error states.
 - A launch-at-login installer and reproducible Terraform configuration.
 
 **Release status:** source builds and automated tests are included. AWS deployment and a real-device sleep/wake endurance test are still release acceptance steps. The executable is a developer build; a signed/notarized installer is not included.
@@ -128,7 +128,7 @@ Detailed cloud activity expires after 30 days from ingestion. Saved aggregate su
 - The most recent five minutes stay local until their idle boundary is settled. Manual sync uploads settled time, not provisional activity.
 - The hosted view is eventually consistent. It refreshes on browser focus and every five minutes; uploads remain hourly.
 - Sleep/wake integration compiles against native APIs but requires manual real-device validation before release. Missed run-loop gaps over ten seconds are conservatively treated as unobserved time.
-- Only previously viewed daily aggregates remain after detailed records expire. History in a previously unused timezone cannot be reconstructed after raw retention.
+- Only previously viewed daily aggregates remain after detailed records expire. Historical data in a previously unused timezone cannot be reconstructed after raw retention.
 - Local clock changes backward stop accepting samples until chronological time resumes. No time is invented to bridge the gap.
 - One macOS user session and one device per paired browser are supported. Browser sessions expire after 30 days; disconnect clears the local cookie.
 - Terraform has not been applied to an AWS account as part of source development. There is no signed installer, automatic update system, or hosted public download.

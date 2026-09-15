@@ -25,7 +25,7 @@ import {
 import { ApiError, duration, loadDay, localDate, request } from './api';
 import type { Day, LoadState } from './types';
 
-type Page = 'today' | 'history' | 'settings';
+type Page = 'today' | 'settings';
 const browserZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
 // Capture and remove the one-time fragment before React effects or any network request.
 const initialPair = new URLSearchParams(window.location.hash.slice(1)).get('pair');
@@ -70,7 +70,6 @@ function Sidebar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) 
         {(
           [
             { id: 'today', label: 'Today', icon: Home },
-            { id: 'history', label: 'History', icon: History },
             { id: 'settings', label: 'Settings', icon: Settings },
           ] as const
         ).map(({ id, label, icon: Icon }) => (
@@ -491,7 +490,6 @@ function SettingsPage({
 export function App() {
   const [zone, setZone] = useState(browserZone);
   const [page, setPage] = useState<Page>('today');
-  const [date, setDate] = useState(localDate());
   const [today, setToday] = useState(localDate());
   const [state, setState] = useState<LoadState>({ kind: 'loading' });
   const [refresh, setRefresh] = useState(0);
@@ -508,7 +506,7 @@ export function App() {
     }, 30000);
     return () => clearInterval(tick);
   }, []);
-  const selected = page === 'today' ? today : date;
+  const selected = today;
   useEffect(() => {
     if (pairing) {
       pairOnce()
@@ -562,7 +560,7 @@ export function App() {
     day: 'numeric',
     year: 'numeric',
   });
-  const title = page === 'settings' ? 'your space' : page === 'history' ? 'a look back' : 'today';
+  const title = page === 'settings' ? 'settings' : 'today';
   async function disconnect() {
     try {
       await request('/logout', { method: 'POST' });
@@ -602,32 +600,16 @@ export function App() {
               {hour < 18 ? <Sun size={16} /> : <Moon size={16} />}
             </p>
             <p className="greeting-sub">
-              {page === 'history'
-                ? 'a little space to remember.'
-                : page === 'settings'
-                  ? 'simple by design. private by nature.'
-                  : 'make a little room for your day.'}
+              {page === 'settings'
+                ? 'simple by design. private by nature.'
+                : 'hope you have a peaceful day.'}
             </p>
             <h1>
               {title}
-              <span lang="ja">
-                {page === 'today' ? '今日' : page === 'history' ? '履歴' : '設定'}
-              </span>
+              <span lang="ja">{page === 'today' ? '今日' : ''}</span>
             </h1>
             <div className="date-line">
               {page === 'settings' ? 'Your journal. Your rhythm.' : formatted}
-              {page === 'history' && (
-                <input
-                  aria-label="Choose a day"
-                  type="date"
-                  value={date}
-                  max={today}
-                  min={localDate(new Date(Date.now() - 365 * 86400000))}
-                  onChange={(e) => {
-                    if (e.target.value) setDate(e.target.value);
-                  }}
-                />
-              )}
             </div>
           </div>
           <span className="hero-note">
@@ -664,20 +646,11 @@ export function App() {
                     <Leaf size={23} />
                   </span>
                   <div>
-                    <h2>
-                      {page === 'today'
-                        ? 'nemu is listening quietly.'
-                        : 'A quiet page in your journal.'}
-                    </h2>
-                    <p>
-                      {page === 'today'
-                        ? 'Your day will appear after the next sync. Until then, make yourself at home.'
-                        : 'There’s no uploaded activity for this day.'}
-                    </p>
+                    <h2>nemu is listening quietly.</h2>
+                    <p>Your day will appear after the next sync.</p>
                   </div>
                   <span className="tag">
-                    <span className="small-dot connected" />{' '}
-                    {page === 'today' ? 'Paired with your Mac' : 'No activity'}
+                    <span className="small-dot connected" /> Paired with your Mac
                   </span>
                 </section>
               )}

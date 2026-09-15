@@ -72,13 +72,16 @@ test('network failure has an actionable retry', async () => {
   expect(await screen.findByRole('alert')).toHaveTextContent('Network unavailable');
   expect(screen.getByRole('button', { name: /Try again/ })).toBeInTheDocument();
 });
-test('history uses calendar date and settings show privacy controls', async () => {
+test('navigation contains only Today and Settings and keeps today selected on return', async () => {
   respond(empty);
   render(<App />);
   await screen.findByText('nemu is listening quietly.');
-  fireEvent.click(screen.getByRole('button', { name: 'History' }));
-  expect(screen.getByLabelText('Choose a day')).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'History' })).not.toBeInTheDocument();
+  expect(screen.queryByLabelText('Choose a day')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
   expect(screen.getByText('Only the essentials.')).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Disconnect' })).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Today' }));
+  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('today');
+  expect(screen.getByRole('button', { name: 'Today' })).toHaveAttribute('aria-current', 'page');
 });
