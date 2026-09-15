@@ -107,10 +107,6 @@ function Sidebar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) 
           <br />a brighter tomorrow.
         </p>
         <Illustration kind="sidebar" className="sidebar-art" />
-        <div className="private-label">
-          <ShieldCheck size={14} /> private by nature
-        </div>
-        <span className="version">nemu v1</span>
       </div>
     </aside>
   );
@@ -388,9 +384,6 @@ function Timeline({
           </span>
         </div>
       )}
-      <div className="timeline-footer">
-        <LockKeyhole size={13} /> App names and time. Nothing more.
-      </div>
     </section>
   );
 }
@@ -696,14 +689,6 @@ export function App() {
               </div>
             </>
           )}
-          <footer className="footer">
-            <span>
-              <Leaf size={13} /> your day, remembered softly.
-            </span>
-            <span>
-              <ShieldCheck size={13} /> private by nature
-            </span>
-          </footer>
         </div>
       </main>
       {pairOpen && <PairHelp onClose={() => setPairOpen(false)} />}

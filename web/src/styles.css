@@ -169,39 +169,20 @@ svg {
     'Segoe Print',
     cursive;
   color: #9c8575;
-  margin-bottom: 316px;
+  margin-bottom: 290px;
   transform: rotate(-5deg);
 }
 .sidebar-art {
   position: absolute;
   left: -37px;
-  bottom: 42px;
+  bottom: -23px;
   width: calc(100% + 74px);
-  height: 308px;
+  height: 300px;
   object-fit: cover;
-  object-position: center 70%;
+  object-position: center 72%;
   opacity: 0.98;
-  mask-image: linear-gradient(0deg, #000 0 78%, transparent 100%);
+  mask-image: linear-gradient(0deg, #000 0 84%, transparent 100%);
   pointer-events: none;
-}
-.private-label {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 10px;
-  color: #807b66;
-  position: relative;
-}
-.version {
-  display: block;
-  margin-top: 13px;
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  color: #8e8074;
-}
-.version span {
-  font-size: 9px;
-  margin-left: 5px;
 }
 main {
   width: 100%;
@@ -211,7 +192,7 @@ main {
 }
 .hero {
   position: relative;
-  height: 318px;
+  height: 308px;
   isolation: isolate;
   overflow: hidden;
   background: #f9f5ef;
@@ -220,19 +201,19 @@ main {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 64%;
+  width: 86%;
   height: 100%;
   object-fit: cover;
   object-position: center center;
   opacity: 1;
   z-index: -2;
-  mask-image: linear-gradient(90deg, transparent 0, #000 19%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 15%);
 }
 .hero:after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #faf7f2 0, #faf7f2 25%, #faf7f2b8 34%, transparent 48%);
+  background: linear-gradient(90deg, #faf7f2 0, #faf7f2 12%, #faf7f2b8 21%, transparent 32%);
   z-index: -1;
   pointer-events: none;
 }
@@ -359,12 +340,12 @@ h1 > span {
 }
 /* Pairing sits above these cards, so their position no longer depends on account setup. */
 .content {
-  padding: 0 21px;
+  padding: 0 14px;
 }
 .metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
   margin-bottom: 16px;
 }
 .metric {
@@ -433,12 +414,12 @@ h1 > span {
 .detail-grid {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
-  gap: 14px;
+  gap: 10px;
 }
 .left-column {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   min-width: 0;
 }
 .panel {
@@ -504,7 +485,7 @@ h1 > span {
 }
 /* A real ranked table and quiet progress bars match the reference without inventing data. */
 .apps-panel {
-  min-height: 316px;
+  min-height: 304px;
   display: flex;
   flex-direction: column;
 }
@@ -649,7 +630,7 @@ h1 > span {
 .timeline-panel {
   display: flex;
   flex-direction: column;
-  min-height: 488px;
+  min-height: 471px;
 }
 .timeline {
   list-style: none;
@@ -788,22 +769,11 @@ h1 > span {
 .empty-timeline-placeholder i:nth-child(3) {
   width: 72%;
 }
-.timeline-footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 7px;
-  font-size: 10px;
-  color: #95806e;
-  border-top: 1px solid #f0e9e1;
-  margin: auto 25px 0;
-  padding: 16px 0;
-}
 .reflection {
   display: flex;
   align-items: center;
   gap: 20px;
-  height: 158px;
+  height: 152px;
   overflow: hidden;
   border: 1px solid #e9dfd3;
   border-radius: 12px;
@@ -856,23 +826,6 @@ h1 > span {
     cursive;
   color: #a58a7a;
   transform: rotate(-5deg);
-}
-.footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 22px 2px;
-  color: #978571;
-  font-size: 10px;
-}
-.footer > span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.footer svg {
-  color: #9a9e80;
 }
 /* Failures remain actionable, but normal onboarding never takes a full dashboard row. */
 .connection-banner.error {
@@ -1084,7 +1037,7 @@ dialog p {
 /* Scale the composition down rather than squeezing a desktop table into a narrow viewport. */
 @media (min-width: 1600px) {
   .hero {
-    height: 318px;
+    height: 308px;
   }
   .hero-copy {
     padding-top: 57px;
@@ -1106,24 +1059,24 @@ dialog p {
     font-size: 12px;
   }
   .content {
-    padding-left: 28px;
-    padding-right: 28px;
+    padding-left: 18px;
+    padding-right: 18px;
   }
   .metrics,
   .detail-grid {
-    gap: 18px;
+    gap: 12px;
   }
   .apps-panel {
-    min-height: 316px;
+    min-height: 304px;
   }
   .reflection {
-    height: 158px;
+    height: 152px;
   }
   .timeline-panel {
-    min-height: 488px;
+    min-height: 471px;
   }
   .hero-art {
-    width: 64%;
+    width: 86%;
   }
 }
 @media (max-width: 1150px) {
@@ -1163,7 +1116,7 @@ dialog p {
     font-size: 9px;
   }
   .content {
-    padding: 0 18px;
+    padding: 0 14px;
   }
   .metric {
     padding: 18px 17px;
@@ -1339,10 +1292,7 @@ dialog p {
   }
   .sidebar-bottom > p {
     font-size: 12px;
-    margin-bottom: 282px;
-  }
-  .footer {
-    font-size: 9px;
+    margin-bottom: 260px;
   }
 }
 @media (max-width: 600px) {
@@ -1517,18 +1467,6 @@ dialog p {
   }
   .timeline time {
     font-size: 10px;
-  }
-  .timeline-footer {
-    font-size: 9px;
-  }
-  .footer {
-    padding: 20px 1px;
-    font-size: 8px;
-    gap: 5px;
-  }
-  .footer svg {
-    width: 11px;
-    height: 11px;
   }
   .settings-hero {
     height: 254px;
