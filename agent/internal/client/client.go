@@ -19,7 +19,7 @@ type Client struct {
 
 func New(base, device, secret string) (*Client, error) {
 	u, err := url.Parse(base)
-	if err != nil || u.Scheme != "https" || u.Host == "" || u.RawQuery != "" || u.Fragment != "" {
+	if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || (u.Path != "" && u.Path != "/") || u.RawQuery != "" || u.Fragment != "" {
 		return nil, fmt.Errorf("NEMU_URL must be an HTTPS origin")
 	}
 	return &Client{strings.TrimRight(base, "/"), device, secret, &http.Client{Timeout: 30 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil

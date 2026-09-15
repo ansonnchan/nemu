@@ -41,9 +41,13 @@ func (Native) Sample() (activity.Sample, error) {
 func (Native) Read(key string) (string, error) {
 	k := C.CString(key)
 	defer C.free(unsafe.Pointer(k))
-	p := C.nemu_secret_read(k)
+	var status C.int
+	p := C.nemu_secret_read(k, &status)
 	if p == nil {
-		return "", errors.New("credential unavailable")
+		if status == -25300 {
+			return "", ErrCredentialNotFound
+		}
+		return "", errors.New("Keychain is unavailable or locked")
 	}
 	defer C.free(unsafe.Pointer(p))
 	return C.GoString(p), nil

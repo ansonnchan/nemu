@@ -40,9 +40,17 @@ function pairOnce() {
 function Illustration({ className = '' }: { className?: string }) {
   return <img className={className} src="/assets/quiet-desk.svg" alt="" aria-hidden="true" />;
 }
-function Brand() {
+function Brand({ onHome }: { onHome: () => void }) {
   return (
-    <a className="brand" href="#today" aria-label="nemu home">
+    <a
+      className="brand"
+      href="#today"
+      onClick={(e) => {
+        e.preventDefault();
+        onHome();
+      }}
+      aria-label="nemu home"
+    >
       <span>
         nemu
         <Leaf size={21} />
@@ -54,7 +62,7 @@ function Brand() {
 function Sidebar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
   return (
     <aside className="sidebar">
-      <Brand />
+      <Brand onHome={() => setPage('today')} />
       <nav aria-label="Main navigation">
         {(
           [

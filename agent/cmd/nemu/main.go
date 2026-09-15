@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -49,6 +50,10 @@ func main() {
 	native := platform.Native{}
 	secret, err := native.Read(state.Device)
 	if err != nil {
+		if !errors.Is(err, platform.ErrCredentialNotFound) {
+			slog.Error("Keychain is unavailable; existing credentials were preserved")
+			os.Exit(1)
+		}
 		secret = activity.ID() + activity.ID()
 		if err = native.Write(state.Device, secret); err != nil {
 			slog.Error("Keychain unavailable")

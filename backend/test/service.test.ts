@@ -186,3 +186,11 @@ test('long offline queues are accepted without discarding their original dates',
   );
   assert.equal(b.intervals[0].started_at, '2020-01-01T00:00:00.000Z');
 });
+
+test('a midnight switch belongs to the new calendar day', () => {
+  const v = interval({ started_at: '2026-03-08T23:30:00Z', ended_at: '2026-03-09T00:00:00Z' });
+  assert.equal(summarize([v], '2026-03-08', 'UTC', null).appSwitches, 0);
+  const next = summarize([v], '2026-03-09', 'UTC', null);
+  assert.equal(next.appSwitches, 1);
+  assert.equal(next.activeSeconds, 0);
+});
