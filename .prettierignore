@@ -1,3 +1,4 @@
+# Skip generated files and local planning notes when checking source formatting.
 node_modules
 dist
 .scratch

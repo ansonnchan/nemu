@@ -1,3 +1,4 @@
+// Dashboard response and loading states; an unpaired browser is distinct from a paired, empty day.
 export type Day = {
   date: string;
   timezone: string;

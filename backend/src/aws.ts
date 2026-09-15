@@ -1,3 +1,4 @@
+// Production storage: archive raw batches in S3 and commit queryable records in DynamoDB.
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
@@ -33,6 +34,7 @@ export class AWSStore implements Store {
       }),
     );
   }
+  // Consume the token and create its browser session together; only one redeemer can succeed.
   async pair(tokenKey: string, session: Item, now: number) {
     await this.db.send(
       new TransactWriteCommand({
@@ -68,6 +70,7 @@ export class AWSStore implements Store {
       }),
     );
   }
+  // Receipt, intervals, and chronological watermark either all commit or all stay unchanged.
   async ingest(b: Batch, digest: string, now: number) {
     const pk = `DEVICE#${b.device_id}`,
       end = b.intervals.at(-1)!.ended_at;
@@ -117,6 +120,7 @@ export class AWSStore implements Store {
   async intervals(device: string, from: string, to: string) {
     const items: Interval[] = [];
     let cursor: Record<string, any> | undefined;
+    // DynamoDB pages results; TTL deletion is eventual, so also check expiry before returning records.
     do {
       const r = await this.db.send(
         new QueryCommand({

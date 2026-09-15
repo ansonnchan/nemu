@@ -1,7 +1,9 @@
+// AppKit owns the menu and power events; only app identity and inactivity duration cross into Go.
 #import <Cocoa/Cocoa.h>
 #import <ApplicationServices/ApplicationServices.h>
 #import <Security/Security.h>
 #include "native_darwin.h"
+// Queue commands in arrival order so a wake notification cannot overwrite a pending sleep event.
 static NSMutableArray<NSNumber *> *commands;
 static BOOL sleeping=NO;
 static NSStatusItem *statusItem;
@@ -26,6 +28,7 @@ void nemu_init(void) {
  [nc addObserverForName:NSWorkspaceSessionDidBecomeActiveNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *n){sleeping=NO;[commands addObject:@11];}];
  [NSApp finishLaunching];
 }
+// Go calls this on the main thread; keep the run-loop slice short so recording can continue.
 int nemu_pump(void) { @autoreleasepool { NSEvent *ev;while((ev=[NSApp nextEventMatchingMask:NSEventMaskAny untilDate:[NSDate distantPast] inMode:NSDefaultRunLoopMode dequeue:YES])){[NSApp sendEvent:ev];}[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];int c=commands.count?[commands[0] intValue]:0;if(commands.count)[commands removeObjectAtIndex:0];return c;} }
 char *nemu_sample(void) { @autoreleasepool {
  if(sleeping)return NULL;
@@ -35,6 +38,7 @@ char *nemu_sample(void) { @autoreleasepool {
  NSData *data=[NSJSONSerialization dataWithJSONObject:v options:0 error:nil];return strdup([[ [NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] UTF8String]);
 } }
 void nemu_status(const char *text){statusLine.title=[NSString stringWithUTF8String:text];}
+// Each device gets its own Keychain item under the shared service name.
 static NSMutableDictionary *query(const char *key){return [@{(__bridge id)kSecClass:(__bridge id)kSecClassGenericPassword,(__bridge id)kSecAttrService:@"app.nemu.agent",(__bridge id)kSecAttrAccount:[NSString stringWithUTF8String:key]} mutableCopy];}
 char *nemu_secret_read(const char *key, int *status){@autoreleasepool{NSMutableDictionary *q=query(key);q[(__bridge id)kSecReturnData]=@YES;CFTypeRef result=NULL;OSStatus s=SecItemCopyMatching((__bridge CFDictionaryRef)q,&result);*status=(int)s;if(s!=errSecSuccess)return NULL;NSData *data=CFBridgingRelease(result);return strdup([[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] UTF8String]);}}
 int nemu_secret_write(const char *key,const char *value){@autoreleasepool{NSMutableDictionary *q=query(key);NSData *data=[[NSString stringWithUTF8String:value] dataUsingEncoding:NSUTF8StringEncoding];OSStatus s=SecItemUpdate((__bridge CFDictionaryRef)q,(__bridge CFDictionaryRef)@{(__bridge id)kSecValueData:data});if(s==errSecItemNotFound){q[(__bridge id)kSecValueData]=data;q[(__bridge id)kSecAttrAccessible]=(__bridge id)kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly;s=SecItemAdd((__bridge CFDictionaryRef)q,NULL);}return (int)s;}}

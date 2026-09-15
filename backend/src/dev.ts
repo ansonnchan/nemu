@@ -1,3 +1,4 @@
+// Local-only HTTP adapter for the same service layer; the filesystem store starts with no activity.
 import { createServer } from 'node:http';
 import { resolve } from 'node:path';
 import { createHandler } from './lambda.js';

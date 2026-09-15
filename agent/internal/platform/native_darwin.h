@@ -1,3 +1,4 @@
+// C boundary for the Go adapter. Returned strings belong to the caller and must be freed.
 #include <stdlib.h>
 char *nemu_sample(void);
 void nemu_init(void);

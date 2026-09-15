@@ -65,6 +65,8 @@ func Open(dir string) (*Store, State, error) {
 	return st, s, nil
 }
 func (s *Store) Close() { syscall.Flock(int(s.lock.Fd()), syscall.LOCK_UN); s.lock.Close() }
+
+// Save replaces the journal only after the new contents reach disk, then syncs the directory entry.
 func (s *Store) Save(state State) error {
 	b, err := json.Marshal(state)
 	if err != nil {
@@ -94,6 +96,8 @@ func (s *Store) Save(state State) error {
 	defer d.Close()
 	return d.Sync()
 }
+
+// Queue reuses an in-flight batch until acknowledgment; pending intervals keep their original order.
 func (s *State) Queue() *Batch {
 	if s.Outbox != nil {
 		return s.Outbox

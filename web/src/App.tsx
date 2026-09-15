@@ -1,3 +1,4 @@
+// Dashboard views and pairing UI. Displayed activity always comes from the day API.
 import { useEffect, useState, type ReactNode } from 'react';
 import {
   ArrowRight,
@@ -31,12 +32,14 @@ const initialPair = new URLSearchParams(window.location.hash.slice(1)).get('pair
 if (initialPair)
   window.history.replaceState(null, '', window.location.pathname + window.location.search);
 let pairingPromise: Promise<unknown> | undefined;
+// Share one redemption request across repeated effects: pairing tokens can only be consumed once.
 function pairOnce() {
   return (pairingPromise ??= request('/pair', {
     method: 'POST',
     body: JSON.stringify({ token: initialPair }),
   }));
 }
+// Keep supporting artwork replaceable without changing the dashboard layout.
 function Illustration({ className = '' }: { className?: string }) {
   return <img className={className} src="/assets/quiet-desk.svg" alt="" aria-hidden="true" />;
 }
@@ -522,6 +525,7 @@ export function App() {
       return;
     }
     if (pairError) return;
+    // Cancel stale requests when the selected day changes so old results cannot replace the new view.
     const controller = new AbortController();
     setState({ kind: 'loading' });
     loadDay(selected, zone, controller.signal)
@@ -534,6 +538,7 @@ export function App() {
     return () => controller.abort();
   }, [selected, zone, refresh, pairing, pairError]);
   useEffect(() => {
+    // Refresh the hosted snapshot; this does not trigger an upload from the Mac.
     const refreshOnFocus = () => setRefresh((n) => n + 1);
     window.addEventListener('focus', refreshOnFocus);
     const timer = window.setInterval(refreshOnFocus, 300000);

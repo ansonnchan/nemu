@@ -1,3 +1,4 @@
+// Transport tests check that failures preserve batch identity and credentials stay on HTTPS origins.
 package client
 
 import (

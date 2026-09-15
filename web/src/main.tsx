@@ -1,3 +1,4 @@
+// Mount the dashboard and bundle its fonts locally, without runtime font-service requests.
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './App';

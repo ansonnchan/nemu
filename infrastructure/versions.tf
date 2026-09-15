@@ -1,3 +1,4 @@
+# Pin compatible tooling and provider ranges; the lock file records the selected versions.
 terraform {
   required_version = ">= 1.6.0"
   required_providers {

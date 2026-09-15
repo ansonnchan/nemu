@@ -1,5 +1,6 @@
 //go:build darwin && cgo
 
+// Translate native snapshots and Keychain status into Go values; release C-owned strings here.
 package platform
 
 /*

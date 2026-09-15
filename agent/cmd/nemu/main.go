@@ -1,3 +1,4 @@
+// The menu-bar process owns local state; network workers send results back to this loop.
 package main
 
 import (
@@ -24,6 +25,7 @@ type result struct {
 }
 
 func main() {
+	// AppKit must stay on the main OS thread while the Go loop pumps its events.
 	runtime.LockOSThread()
 	base := flag.String("url", os.Getenv("NEMU_URL"), "hosted nemu HTTPS origin")
 	home, err := os.UserHomeDir()
@@ -44,6 +46,7 @@ func main() {
 			os.Exit(1)
 		}
 	}
+	// Close the previous run at its last saved observation, never at this startup time.
 	state.Engine.Recover()
 	state.Pending = append(state.Pending, state.Engine.Seal(state.Engine.Last, true)...)
 	save()
@@ -69,6 +72,7 @@ func main() {
 	slog.Info("agent started")
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	// Workers do network I/O only; journal changes happen after results return here.
 	results := make(chan result, 2)
 	busy := false
 	registered := false
@@ -91,6 +95,7 @@ func main() {
 			return
 		}
 		state.Pending = append(state.Pending, state.Engine.Seal(time.Now().UTC(), false)...)
+		// Persist the exact outbox before sending so a crash can retry the same batch.
 		b := state.Queue()
 		save()
 		if b == nil {
@@ -163,6 +168,7 @@ func main() {
 		}
 		cmd := platform.Pump()
 		now := time.Now().UTC()
+		// Native menu tags 1–5 are actions; 10/11 mark sleep or session inactivity and return.
 		switch cmd {
 		case 1:
 			platform.Open(api.Base)

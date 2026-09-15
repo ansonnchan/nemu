@@ -1,3 +1,4 @@
+// HTTP boundary: validate origins, select the auth flow, and return safe errors and session cookies.
 import type { APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
 import { ZodError } from 'zod';
 import { AWSStore } from './aws.js';

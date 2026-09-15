@@ -1,3 +1,4 @@
+// Mock API responses only in tests to check the important dashboard states and navigation.
 import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect, vi } from 'vitest';
 import { App } from './App';

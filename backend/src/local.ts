@@ -24,6 +24,7 @@ export class LocalStore implements Store {
     const v = this.data[this.key(pk, sk)];
     return v ? structuredClone(v) : undefined;
   }
+  // Serialize writes and publish a copied state only after its file replacement succeeds.
   private write(fn: (data: Record<string, Item>) => void) {
     const next = this.chain.then(async () => {
       const draft = structuredClone(this.data);

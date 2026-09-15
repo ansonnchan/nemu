@@ -1,3 +1,4 @@
+// Synthetic intervals cover authorization, idempotency, and day calculations without AWS calls.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Service, HttpError, type Store, type Item, hash } from '../src/service.js';

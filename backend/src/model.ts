@@ -1,3 +1,4 @@
+// Version-one wire validation and calendar math live together so derived totals use the same rules.
 import { z } from 'zod';
 import { DateTime } from 'luxon';
 export const id = z.string().regex(/^[a-f0-9]{32}$/);
@@ -57,12 +58,14 @@ export function validateBatch(input: unknown, now: Date): Batch {
   }
   return b;
 }
+// Add one local calendar day, not 24 UTC hours: DST can make a day shorter or longer.
 export function dayBounds(date: string, zone: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || zone.length > 100) throw new Error('Invalid day');
   const start = DateTime.fromISO(date, { zone }).startOf('day');
   if (!start.isValid || start.toISODate() !== date) throw new Error('Invalid day or timezone');
   return { start: start.toMillis(), end: start.plus({ days: 1 }).toMillis() };
 }
+// Clip intervals for display; shared logical session IDs reconnect hourly checkpoint fragments.
 export function summarize(
   intervals: Interval[],
   date: string,

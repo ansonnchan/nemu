@@ -28,6 +28,8 @@ type Sample struct {
 	App  App
 	Idle time.Duration
 }
+
+// Engine keeps recent intervals mutable until an idle decision can no longer move their boundaries.
 type Engine struct {
 	Current *Interval  `json:"current,omitempty"`
 	Tail    []Interval `json:"tail"`

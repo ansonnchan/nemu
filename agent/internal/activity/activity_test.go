@@ -1,3 +1,4 @@
+// Timestamp-driven scenarios exercise the state machine without needing a running macOS desktop.
 package activity
 
 import (

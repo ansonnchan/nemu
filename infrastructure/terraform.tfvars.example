@@ -1,2 +1,3 @@
+# Copy to terraform.tfvars to choose deployment names and region; keep credentials outside this file.
 region = "us-west-2"
 name = "nemu"

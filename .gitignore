@@ -1,3 +1,4 @@
+# Keep local state, secrets, build outputs, and private working notes out of commits.
 /AGENTS.md
 /implementation.md
 /architecture.md

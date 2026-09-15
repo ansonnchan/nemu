@@ -1,3 +1,4 @@
+// Package client sends authenticated HTTPS requests without following redirects or logging secrets.
 package client
 
 import (

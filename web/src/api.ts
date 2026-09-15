@@ -1,3 +1,4 @@
+// Same-origin API calls use the browser cookie; permanent device credentials never enter this client.
 import type { Day } from './types';
 export class ApiError extends Error {
   constructor(
@@ -24,6 +25,7 @@ export const loadDay = (date: string, zone: string, signal?: AbortSignal) =>
   request<Day>(`/day?date=${encodeURIComponent(date)}&timezone=${encodeURIComponent(zone)}`, {
     signal,
   });
+// Use local date parts; slicing an ISO timestamp would switch days at UTC midnight.
 export const localDate = (date = new Date()) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 export function duration(seconds: number) {

@@ -1,3 +1,4 @@
+# Root-level shortcuts for the checks and builds used during local development.
 .PHONY: check test build format
 check:
 	npm run check

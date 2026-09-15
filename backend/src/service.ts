@@ -1,3 +1,4 @@
+// Shared application rules for device auth, pairing, ingestion, and calendar-day reads.
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
 import { id, validateBatch, dayBounds, summarize, type Batch, type Interval } from './model.js';
@@ -118,6 +119,7 @@ export class Service {
     if (b.device_id !== device) throw new HttpError(403, 'Device does not match');
     const digest = hash(JSON.stringify(b));
     const meta = await this.store.get(`DEVICE#${device}`, 'META');
+    // The latest receipt also lives on device metadata, even after short-lived batch records expire.
     const receipt =
       (await this.store.get(`DEVICE#${device}`, `BATCH#${b.batch_id}`)) ??
       (meta?.lastBatchID === b.batch_id ? { hash: meta.lastBatchHash } : undefined);
@@ -125,6 +127,7 @@ export class Service {
       if (receipt.hash !== digest) throw new HttpError(409, 'Batch ID already used');
       return { accepted: true, duplicate: true };
     }
+    // Archive first: a failed transaction may leave a raw object, but never an accepted unarchived batch.
     await this.store.archive(b, digest);
     try {
       await this.store.ingest(b, digest, this.seconds());
@@ -147,6 +150,7 @@ export class Service {
     if (bounds.start > this.now().getTime() + 86400000)
       throw new HttpError(400, 'Future day unavailable');
     const meta = await this.store.get(pk, 'META');
+    // A wire interval can span 24 hours, so include starts from the preceding day before clipping.
     const data = await this.store.intervals(
       device,
       new Date(bounds.start - 86400000).toISOString(),
@@ -167,6 +171,7 @@ export class Service {
     await this.store.put({
       pk,
       sk,
+      // Keep only aggregates beyond detailed retention, not a second long-lived activity timeline.
       summary: { ...summary, timeline: [] },
       expiresAt:
         existing && existing.expiresAt > this.seconds()

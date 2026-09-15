@@ -1,3 +1,4 @@
+# Production resources: private storage, one API, and a shared CloudFront origin for web and cookies.
 resource "random_id" "suffix" { byte_length = 4 }
 locals { prefix = "${var.name}-${random_id.suffix.hex}" }
 resource "aws_s3_bucket" "raw" { bucket = "${local.prefix}-raw" }
@@ -56,6 +57,7 @@ resource "aws_iam_role" "lambda" {
   name               = "${local.prefix}-lambda"
   assume_role_policy = jsonencode({ Version = "2012-10-17", Statement = [{ Effect = "Allow", Principal = { Service = "lambda.amazonaws.com" }, Action = "sts:AssumeRole" }] })
 }
+# The runtime can access only its table, raw upload prefix, and log streams.
 resource "aws_iam_role_policy" "lambda" {
   role = aws_iam_role.lambda.id
   policy = jsonencode({ Version = "2012-10-17", Statement = [
@@ -172,6 +174,7 @@ resource "aws_cloudfront_distribution" "web" {
     response_headers_policy_id = aws_cloudfront_response_headers_policy.security.id
     compress                   = true
   }
+  # Forward browser cookies to the API and disable caching of device-scoped responses.
   ordered_cache_behavior {
     path_pattern               = "/api/*"
     target_origin_id           = "api"

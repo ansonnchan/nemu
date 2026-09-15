@@ -1,3 +1,4 @@
+// An expired one-time link must stay actionable instead of disappearing behind a day request.
 import { render, screen, fireEvent } from '@testing-library/react';
 import { test, expect, vi } from 'vitest';
 test('expired pairing remains visible and offers a new link workflow', async () => {

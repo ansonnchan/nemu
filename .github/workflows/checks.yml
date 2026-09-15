@@ -1,3 +1,4 @@
+# Validate web, backend, and infrastructure on Linux; compile and test the native bridge on macOS.
 name: checks
 on: [push, pull_request]
 permissions:

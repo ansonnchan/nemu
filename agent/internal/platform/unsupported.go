@@ -1,5 +1,6 @@
 //go:build !darwin || !cgo
 
+// Keep core packages testable elsewhere, but fail explicitly if the desktop process starts without macOS/cgo.
 package platform
 
 import (

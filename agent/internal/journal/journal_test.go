@@ -1,3 +1,4 @@
+// These tests reopen real temporary files to check recovery, retry identity, and single-writer safety.
 package journal
 
 import (
