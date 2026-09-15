@@ -4,8 +4,6 @@ nemu records foreground application identity and time on macOS, keeps a durable 
 
 [Open the live dashboard](https://d1z5giweildfo4.cloudfront.net/) — pair it with the macOS agent to view your own activity.
 
-> There are plans to support Windows and Linux as well as create a browser extension in Chrome, Safari etc. to differentiate websites e.g. Youtube, Wikipedia, or even ansonnchan.dev 
-
 ## Video Demo
 
 ![nemu dashboard syncing a recorded day](web/public/assets/nemu-demo.gif)
@@ -21,7 +19,7 @@ nemu records foreground application identity and time on macOS, keeps a durable 
 - A React dashboard with Today and Settings, top apps, timeline, and loading/empty/error states.
 - A launch-at-login installer and reproducible Terraform configuration.
 
-**Release status:** source builds and automated tests are included. AWS deployment and a real-device sleep/wake endurance test are still release acceptance steps. The executable is a developer build; a signed/notarized installer is not included.
+**Release status:** the dashboard and API are live as a hosted developer preview. The macOS agent is built from source; a signed/notarized installer is not included yet.
 
 ## Architecture
 
@@ -38,7 +36,12 @@ flowchart TD
 
 Raw sessions remain the source of truth during their retention period. Calendar summaries are derived in the browser’s IANA timezone, including 23- and 25-hour daylight-saving days. Background apps receive no active time.
 
-Read [architecture and access patterns](docs/architecture.md), [activity semantics](docs/activity.md), and [security and retention](docs/security.md).
+Detailed documentation:
+
+- [Architecture and access patterns](docs/architecture.md)
+- [Activity semantics](docs/activity.md)
+- [Security and retention](docs/security.md)
+- [AWS deployment and verification](docs/deployment.md)
 
 ## Local development
 
@@ -70,12 +73,15 @@ go build -o nemu ./cmd/nemu
 
 The suites exercise idle rollback, brief switches, crash persistence, retries, pairing concurrency/expiry, authorization, validation, DST, day clipping, and the main dashboard states. Synthetic records exist only inside tests.
 
-## Run on macOS
+## Try the hosted demo on macOS
+
+Clone this repository, then build and run the menu-bar agent against the hosted Nemu dashboard:
 
 ```sh
-cd agent
+git clone https://github.com/ansonnchan/nemu.git
+cd nemu/agent
 go build -o nemu ./cmd/nemu
-NEMU_URL=https://YOUR_CLOUDFRONT_DOMAIN ./nemu
+NEMU_URL=https://d1z5giweildfo4.cloudfront.net ./nemu
 ```
 
 The first successful registration opens a private pairing link. You can also choose **Pair this browser** from the nemu menu-bar item. The link expires after ten minutes and works once. Your browser never receives the permanent device secret.
@@ -89,7 +95,7 @@ The journal lives in `~/Library/Application Support/nemu`, with a single-process
 From the repository root, after building:
 
 ```sh
-NEMU_URL=https://YOUR_CLOUDFRONT_DOMAIN ./scripts/install-agent.sh
+NEMU_URL=https://d1z5giweildfo4.cloudfront.net ./scripts/install-agent.sh
 ```
 
 To disable login launch and stop that installed process:
@@ -100,47 +106,23 @@ launchctl bootout "gui/$(id -u)" "$HOME/Library/LaunchAgents/app.nemu.agent.plis
 
 The installer keeps the small process in Application Support. Running the executable directly and through launchd simultaneously is prevented by the journal lock. There is no in-menu login toggle in this version.
 
-## AWS deployment
-
-See the [deployment guide](docs/deployment.md). Nothing deploys as part of `npm install`, tests, or builds.
-
-```sh
-npm run build
-cd infrastructure
-terraform init
-terraform plan
-# Review the resources and costs, then deploy with your configured AWS identity:
-terraform apply
-```
-
-Upload `web/dist` to the output web bucket as described in the guide. CloudFront serves the dashboard and API from one origin. Configure `NEMU_URL` using the `web_url` output.
-
-## Privacy
-
-nemu collects application names/bundle IDs, UTC interval boundaries, and idle state. It never collects screenshots, keystrokes, clipboard contents, messages, documents, URLs, page titles, browser history, or window contents.
-
-Detailed cloud activity expires after 30 days from ingestion. Saved aggregate summaries expire after one year from their creation. Timelines are not stored in the long-lived summary cache. AWS expiry cleanup is eventual. Pending local data remains until acknowledged, so long network outages do not silently discard a day.
-
-## Known limitations
-
-- A long video without input can appear idle after five minutes. Media detection is intentionally absent.
-- Foreground polling runs once per second; faster transitions may not be observed.
-- The most recent five minutes stay local until their idle boundary is settled. Manual sync uploads settled time, not provisional activity.
-- The hosted view is eventually consistent. It refreshes on browser focus and every five minutes; uploads remain hourly.
-- Sleep/wake integration compiles against native APIs but requires manual real-device validation before release. Missed run-loop gaps over ten seconds are conservatively treated as unobserved time.
-- Only previously viewed daily aggregates remain after detailed records expire. Historical data in a previously unused timezone cannot be reconstructed after raw retention.
-- Local clock changes backward stop accepting samples until chronological time resumes. No time is invented to bridge the gap.
-- One macOS user session and one device per paired browser are supported. Browser sessions expire after 30 days; disconnect clears the local cookie.
-- Terraform has not been applied to an AWS account as part of source development. There is no signed installer, automatic update system, or hosted public download.
-
 ## Technology
 
-Go · Objective-C/cgo · React · TypeScript · Vite · Lambda · API Gateway · S3 · DynamoDB · CloudFront · Terraform.
-
-
+| Layer | Technology | Role |
+| --- | --- | --- |
+| macOS agent | Go, Objective-C, cgo | Foreground-app sampling, native idle detection, sleep/wake events, and the menu-bar UI |
+| Local state | Atomic JSON journal, macOS Keychain | Crash-safe activity queue and protected device credentials |
+| Dashboard | React, TypeScript, Vite | Daily summaries, app rankings, timeline, pairing, and manual sync requests |
+| API | AWS Lambda, API Gateway | Device registration, authenticated uploads, pairing, and browser queries |
+| Storage | Amazon S3, DynamoDB | Short-lived raw batches, device records, sessions, and daily summaries |
+| Delivery | CloudFront | HTTPS delivery for the dashboard and same-origin API |
+| Infrastructure | Terraform | Reproducible AWS provisioning and lifecycle configuration |
 
 ## V2
 
-1. Chrome extension for domain/tab activity while Chrome is foreground.
-2. Windows support.
-3. Linux support.
+| Status | Area | Direction |
+| --- | --- | --- |
+| Current | macOS | Complete the v1 developer preview and package a signed, notarized installer |
+| Coming | Windows | Add an isolated native platform adapter while preserving the same activity semantics |
+| Coming | Linux | Add a desktop-aware platform adapter and retain the shared journal and sync model |
+| Planning | Chrome extension | Optionally distinguish sites such as YouTube and Wikipedia while Chrome is foreground, without collecting page content or input values |
