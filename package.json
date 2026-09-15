@@ -1,1 +1,21 @@
-{"name":"nemu","private":true,"workspaces":["backend","web"],"scripts":{"test":"npm run test --workspaces --if-present","build":"npm run build --workspaces","check":"npm run check --workspaces"}}
+{
+  "name": "nemu",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "web"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "build": "npm run build --workspaces",
+    "check": "npm run check --workspaces",
+    "format": "prettier --write \"web/src/**/*.{ts,tsx,css}\" \"backend/{src,test}/**/*.ts\" \"*.{json,md}\" \"docs/*.md\"",
+    "format:check": "prettier --check \"web/src/**/*.{ts,tsx,css}\" \"backend/{src,test}/**/*.ts\" \"*.{json,md}\" \"docs/*.md\""
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
