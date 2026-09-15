@@ -72,15 +72,17 @@ data "archive_file" "lambda" {
   output_path = "${path.module}/../backend/lambda.zip"
 }
 resource "aws_lambda_function" "api" {
-  function_name                  = local.prefix
-  role                           = aws_iam_role.lambda.arn
-  runtime                        = "nodejs22.x"
-  handler                        = "index.handler"
-  filename                       = data.archive_file.lambda.output_path
-  source_code_hash               = data.archive_file.lambda.output_base64sha256
-  timeout                        = 30
-  memory_size                    = 256
-  reserved_concurrent_executions = 10
+  function_name    = local.prefix
+  role             = aws_iam_role.lambda.arn
+  runtime          = "nodejs22.x"
+  handler          = "index.handler"
+  filename         = data.archive_file.lambda.output_path
+  source_code_hash = data.archive_file.lambda.output_base64sha256
+  timeout          = 30
+  memory_size      = 256
+  # New Free Plan accounts can have an account concurrency quota of only 10.
+  # Reserving executions would violate Lambda's required unreserved minimum;
+  # the API Gateway stage still bounds request rate and burst size.
   environment {
     variables = { TABLE_NAME = aws_dynamodb_table.data.name, RAW_BUCKET = aws_s3_bucket.raw.id, WEB_ORIGIN = var.web_origin != "" ? var.web_origin : "https://${aws_cloudfront_distribution.web.domain_name}" }
   }
