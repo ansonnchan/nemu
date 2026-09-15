@@ -37,10 +37,21 @@ test('paired empty state contains no fabricated activity', async () => {
   respond(empty);
   const { container } = render(<App />);
   expect(await screen.findAllByText('0m')).toHaveLength(3);
-  expect(screen.queryByRole('button', { name: 'Sync now' })).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Sync now' })).toBeInTheDocument();
+  expect(screen.queryByText(/Last synced/)).not.toBeInTheDocument();
   expect(
     Array.from(container.querySelectorAll('img'), (image) => image.getAttribute('src')),
   ).toEqual(['/assets/nemu-hero-anime-reference.png']);
+});
+test('paired browser can request a device sync', async () => {
+  respond(empty);
+  render(<App />);
+  fireEvent.click(await screen.findByRole('button', { name: 'Sync now' }));
+  expect(await screen.findByRole('button', { name: 'Sync requested' })).toBeDisabled();
+  expect(fetch).toHaveBeenCalledWith(
+    '/api/sync-requests',
+    expect.objectContaining({ method: 'POST' }),
+  );
 });
 test('populated day renders uploaded metrics and idle deliberately', async () => {
   respond({

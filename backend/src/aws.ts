@@ -2,6 +2,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
+  DeleteCommand,
   GetCommand,
   PutCommand,
   QueryCommand,
@@ -57,6 +58,24 @@ export class AWSStore implements Store {
         ],
       }),
     );
+  }
+  async requestSync(device: string, now: number) {
+    await this.put({
+      pk: `DEVICE#${device}`,
+      sk: 'COMMAND#SYNC',
+      requestedAt: new Date(now * 1000).toISOString(),
+      expiresAt: now + 600,
+    });
+  }
+  async takeSync(device: string, now: number) {
+    const result = await this.db.send(
+      new DeleteCommand({
+        TableName: this.table,
+        Key: { pk: `DEVICE#${device}`, sk: 'COMMAND#SYNC' },
+        ReturnValues: 'ALL_OLD',
+      }),
+    );
+    return Boolean(result.Attributes && result.Attributes.expiresAt > now);
   }
   async archive(b: Batch, digest: string) {
     const date = b.intervals[0].started_at.slice(0, 10).replaceAll('-', '/');

@@ -241,10 +241,18 @@ h1 > span {
   margin-top: 6px;
   text-transform: lowercase;
 }
-.hero-status {
+.hero-actions {
   position: absolute;
   top: 27px;
   right: 29px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  z-index: 2;
+}
+.hero-sync,
+.hero-status {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -255,7 +263,26 @@ h1 > span {
   background: #f5ece2d6;
   border: 1px solid #f8f3ed99;
   backdrop-filter: blur(8px);
-  z-index: 2;
+}
+.hero-sync {
+  border-color: #eadfd4;
+  padding: 8px 12px;
+  font-size: 11px;
+  box-shadow: 0 3px 12px #6f493b12;
+}
+.hero-sync.error {
+  color: #8f584c;
+}
+.hero-sync:disabled {
+  opacity: 0.82;
+}
+.hero-sync .spinning {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 .status-divider {
   height: 12px;
@@ -978,9 +1005,11 @@ dialog p {
     width: 68%;
     opacity: 1;
   }
-  .hero-status {
+  .hero-actions {
     top: 19px;
     right: 20px;
+  }
+  .hero-status {
     font-size: 9px;
   }
   .content {
@@ -1183,9 +1212,11 @@ dialog p {
     width: 100%;
     opacity: 1;
   }
-  .hero-status {
+  .hero-actions {
     top: 14px;
     right: 18px;
+  }
+  .hero-status {
     font-size: 9px;
     padding: 5px 8px;
   }

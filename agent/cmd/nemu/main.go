@@ -21,6 +21,7 @@ import (
 
 type result struct {
 	kind, id, url string
+	requested     bool
 	err           error
 }
 
@@ -86,6 +87,7 @@ func main() {
 	}
 	register()
 	nextUpload := time.Now().Add(time.Hour)
+	nextSyncPoll := time.Now()
 	nextSample := time.Now()
 	sleeping := false
 	retry := time.Minute
@@ -122,6 +124,19 @@ func main() {
 			results <- result{kind: "pair", url: api.Base + "/#pair=" + v.Token, err: err}
 		}()
 	}
+	pollSync := func() {
+		if busy || !registered {
+			return
+		}
+		busy = true
+		go func() {
+			var v struct {
+				Requested bool `json:"requested"`
+			}
+			err := api.Post(context.Background(), "/sync-requests/poll", struct{}{}, &v)
+			results <- result{kind: "sync-poll", requested: v.Requested, err: err}
+		}()
+	}
 	quit := func() {
 		state.Engine.Stop(time.Now().UTC(), "shutdown")
 		state.Pending = append(state.Pending, state.Engine.Seal(time.Now().UTC(), true)...)
@@ -134,7 +149,9 @@ func main() {
 			return
 		case r := <-results:
 			busy = false
-			if r.err != nil {
+			if r.err != nil && r.kind == "sync-poll" {
+				nextSyncPoll = time.Now().Add(15 * time.Second)
+			} else if r.err != nil {
 				slog.Warn("request failed; local data retained", "operation", r.kind)
 				nextRetry = time.Now().Add(retry)
 				retry *= 2
@@ -158,6 +175,10 @@ func main() {
 					upload()
 				case "pair":
 					platform.Open(r.url)
+				case "sync-poll":
+					if r.requested {
+						upload()
+					}
 				}
 			}
 			if pairNext && registered && !busy {
@@ -226,6 +247,10 @@ func main() {
 		if !now.Before(nextUpload) {
 			upload()
 			nextUpload = now.Add(time.Hour)
+		}
+		if !now.Before(nextSyncPoll) {
+			pollSync()
+			nextSyncPoll = now.Add(5 * time.Second)
 		}
 		if !nextRetry.IsZero() && !now.Before(nextRetry) && !busy {
 			nextRetry = time.Time{}

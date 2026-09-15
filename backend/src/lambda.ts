@@ -50,6 +50,18 @@ export const createHandler =
           `nemu_session=${t}; Path=/api; HttpOnly; Secure; SameSite=Strict; Max-Age=2592000`,
         ]);
       }
+      if (method === 'POST' && path === '/api/sync-requests')
+        return reply(
+          202,
+          await service.requestSync(
+            await service.browser(event.cookies?.join('; ') ?? event.headers.cookie),
+          ),
+        );
+      if (method === 'POST' && path === '/api/sync-requests/poll')
+        return reply(
+          200,
+          await service.takeSync(await service.device(event.headers.authorization)),
+        );
       if (method === 'POST' && path === '/api/batches')
         return reply(
           200,

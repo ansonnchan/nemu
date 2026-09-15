@@ -15,7 +15,7 @@ The web experience uses warm ivory surfaces, soft sage accents, and dedicated an
 - A Go macOS menu-bar process using NSWorkspace, native input inactivity, and sleep/wake notifications.
 - Foreground app sessions; five-minute retroactive idle detection; separate idle intervals; excluded sleep time.
 - An atomic private local journal, crash recovery, and a durable upload outbox.
-- Hourly uploads, manual **Sync now** in the menu bar, and retry-safe batch identities.
+- Hourly uploads, manual **Sync now** from the dashboard or menu bar, and retry-safe batch identities.
 - Device credentials in Keychain and short-lived, single-use browser pairing. No email or password.
 - AWS ingestion, private S3 raw archives, DynamoDB records and derived calendar summaries.
 - A React dashboard with Today and Settings, top apps, timeline, and loading/empty/error states.
@@ -80,7 +80,7 @@ NEMU_URL=https://YOUR_CLOUDFRONT_DOMAIN ./nemu
 
 The first successful registration opens a private pairing link. You can also choose **Pair this browser** from the nemu menu-bar item. The link expires after ten minutes and works once. Your browser never receives the permanent device secret.
 
-Menu actions: **Open nemu**, **Sync now**, **Pause / Resume**, **Pair this browser**, **Quit**. The menu shows recording state and last sync age. Pausing persists across restarts. If Keychain is locked, unlock it and restart; existing credentials are preserved.
+Menu actions: **Open nemu**, **Sync now**, **Pause / Resume**, **Pair this browser**, **Quit**. The dashboard can also request a sync; the running agent consumes that one-time request and uses the same durable upload path. The menu shows recording state and last sync age. Pausing persists across restarts. If Keychain is locked, unlock it and restart; existing credentials are preserved.
 
 The journal lives in `~/Library/Application Support/nemu`, with a single-process lock and private file permissions. The secret lives in the `app.nemu.agent` Keychain service. Keep the journal and its corresponding Keychain item together when migrating. Do not edit queued batches by hand.
 

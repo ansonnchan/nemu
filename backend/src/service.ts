@@ -9,6 +9,8 @@ export interface Store {
   get(pk: string, sk: string): Promise<Item | undefined>;
   put(item: Item, absent?: boolean): Promise<void>;
   pair(tokenKey: string, session: Item, now: number): Promise<void>;
+  requestSync(device: string, now: number): Promise<void>;
+  takeSync(device: string, now: number): Promise<boolean>;
   ingest(batch: Batch, hash: string, now: number): Promise<void>;
   intervals(device: string, from: string, to: string): Promise<Interval[]>;
   archive(batch: Batch, hash: string): Promise<void>;
@@ -108,6 +110,13 @@ export class Service {
     if (!s || s.expiresAt <= this.seconds())
       throw new HttpError(401, 'Pair your device to continue');
     return s.device as string;
+  }
+  async requestSync(device: string) {
+    await this.store.requestSync(device, this.seconds());
+    return { requested: true };
+  }
+  async takeSync(device: string) {
+    return { requested: await this.store.takeSync(device, this.seconds()) };
   }
   async ingest(device: string, input: unknown) {
     let b: Batch;

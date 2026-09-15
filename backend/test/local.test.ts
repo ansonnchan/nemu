@@ -51,6 +51,11 @@ test('HTTP boundary enforces origin, auth, malformed JSON and secure cookies', a
       403,
     );
     assert.equal((await handler(event('/api/batches', '{}'))).statusCode, 401);
+    assert.equal(
+      (await handler(event('/api/sync-requests', '{}', { origin: 'https://nemu.example' })))
+        .statusCode,
+      401,
+    );
     await s.register({ device_id: device, secret });
     const p = await s.createPair(device);
     const r = await handler(
@@ -58,6 +63,24 @@ test('HTTP boundary enforces origin, auth, malformed JSON and secure cookies', a
     );
     assert.equal(r.statusCode, 200);
     assert.match(r.cookies![0], /HttpOnly; Secure; SameSite=Strict/);
+    const session = await s.redeem({ token: (await s.createPair(device)).token });
+    assert.equal(
+      (
+        await handler(
+          event('/api/sync-requests', '{}', {
+            origin: 'https://nemu.example',
+            cookie: `nemu_session=${session}`,
+          }),
+        )
+      ).statusCode,
+      202,
+    );
+    const poll = await handler(
+      event('/api/sync-requests/poll', '{}', {
+        authorization: `Bearer ${device}:${secret}`,
+      }),
+    );
+    assert.deepEqual(JSON.parse(poll.body!), { requested: true });
     assert.equal(
       (
         await handler(

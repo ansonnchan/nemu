@@ -57,6 +57,24 @@ export class LocalStore implements Store {
       d[this.key(session.pk, session.sk)] = session;
     });
   }
+  async requestSync(device: string, now: number) {
+    await this.put({
+      pk: `DEVICE#${device}`,
+      sk: 'COMMAND#SYNC',
+      requestedAt: new Date(now * 1000).toISOString(),
+      expiresAt: now + 600,
+    });
+  }
+  async takeSync(device: string, now: number) {
+    let requested = false;
+    await this.write((d) => {
+      const key = this.key(`DEVICE#${device}`, 'COMMAND#SYNC');
+      const command = d[key];
+      requested = Boolean(command && command.expiresAt > now);
+      delete d[key];
+    });
+    return requested;
+  }
   async archive(b: Batch, digest: string) {
     const dir = join(this.dir, 'raw', b.device_id);
     await fs.mkdir(dir, { recursive: true, mode: 0o700 });

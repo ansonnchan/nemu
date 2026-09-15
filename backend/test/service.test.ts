@@ -23,6 +23,15 @@ class Memory implements Store {
     this.data.delete(this.key(pk, 'TOKEN'));
     await this.put(s, true);
   }
+  async requestSync(device: string, now: number) {
+    await this.put({ pk: `DEVICE#${device}`, sk: 'COMMAND#SYNC', expiresAt: now + 600 });
+  }
+  async takeSync(device: string, now: number) {
+    const key = this.key(`DEVICE#${device}`, 'COMMAND#SYNC'),
+      command = this.data.get(key);
+    this.data.delete(key);
+    return Boolean(command && command.expiresAt > now);
+  }
   async archive(b: Batch) {
     this.raw.set(b.batch_id, b);
   }
@@ -92,6 +101,12 @@ test('pairing is single use, expires, and yields scoped browser session', async 
   const p2 = await service.createPair(device);
   store.data.get(store.key(`PAIR#${hash(p2.token)}`, 'TOKEN'))!.expiresAt = 0;
   await assert.rejects(service.redeem({ token: p2.token }), HttpError);
+});
+test('browser sync requests are consumed once by the paired device', async () => {
+  const { service } = await setup();
+  await service.requestSync(device);
+  assert.deepEqual(await service.takeSync(device), { requested: true });
+  assert.deepEqual(await service.takeSync(device), { requested: false });
 });
 test('duplicate upload is idempotent and changed payload conflicts', async () => {
   const { service, store } = await setup();

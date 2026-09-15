@@ -1,5 +1,5 @@
 // Dashboard views and pairing UI. Displayed activity always comes from the day API.
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   ArrowRight,
   ArrowLeftRight,
@@ -14,6 +14,7 @@ import {
   LockKeyhole,
   Monitor,
   Moon,
+  RefreshCw,
   Settings,
   ShieldCheck,
   Star,
@@ -150,7 +151,7 @@ function PairHelp({ onClose }: { onClose: () => void }) {
           <span>3</span>
           <div>
             <strong>Make yourself at home</strong>
-            <p>Your day appears after the next hourly sync.</p>
+            <p>Your day appears after the next sync.</p>
           </div>
         </li>
       </ol>
@@ -411,7 +412,7 @@ function SettingsPage({
           <div>
             <h3>Recording & sync</h3>
             <p>
-              Pause recording or choose Sync now from the nemu menu bar.
+              Pause recording from the nemu menu bar. Sync here or from the Mac.
               <br />
               Automatic uploads happen once per hour.
             </p>
@@ -454,6 +455,8 @@ export function App() {
   const [pairing, setPairing] = useState(Boolean(initialPair));
   const [pairError, setPairError] = useState(false);
   const [disconnectOpen, setDisconnectOpen] = useState(false);
+  const [syncState, setSyncState] = useState<'idle' | 'requesting' | 'requested' | 'error'>('idle');
+  const syncTimer = useRef<number | undefined>(undefined);
   useEffect(() => {
     const tick = window.setInterval(() => {
       setToday(localDate());
@@ -461,6 +464,7 @@ export function App() {
     }, 30000);
     return () => clearInterval(tick);
   }, []);
+  useEffect(() => () => window.clearTimeout(syncTimer.current), []);
   const selected = today;
   useEffect(() => {
     if (pairing) {
@@ -526,6 +530,20 @@ export function App() {
       setDisconnectOpen(false);
     }
   }
+  async function syncNow() {
+    window.clearTimeout(syncTimer.current);
+    setSyncState('requesting');
+    try {
+      await request('/sync-requests', { method: 'POST' });
+      setSyncState('requested');
+      syncTimer.current = window.setTimeout(() => {
+        setRefresh((n) => n + 1);
+        setSyncState('idle');
+      }, 6500);
+    } catch {
+      setSyncState('error');
+    }
+  }
   return (
     <div className="app-shell">
       <a href="#main" className="skip-link">
@@ -535,16 +553,36 @@ export function App() {
       <main id="main">
         <header className={`hero ${page === 'settings' ? 'settings-hero' : ''}`}>
           <HeroIllustration />
-          {(pairing || day?.lastSynced) && (
-            <div className="hero-status">
-              <span className={`small-dot ${paired ? 'connected' : ''}`} />
-              <span>
-                {pairing
-                  ? 'Pairing your browser…'
-                  : `Last synced ${new Date(day!.lastSynced!).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`}
-              </span>
-              <span className="status-divider" />
-              <ShieldCheck size={15} />
+          {(pairing || paired) && (
+            <div className="hero-actions">
+              {paired && (
+                <button
+                  className={`hero-sync ${syncState === 'error' ? 'error' : ''}`}
+                  onClick={syncNow}
+                  disabled={syncState === 'requesting' || syncState === 'requested'}
+                >
+                  <RefreshCw size={14} className={syncState === 'requesting' ? 'spinning' : ''} />
+                  {syncState === 'requesting'
+                    ? 'Requesting…'
+                    : syncState === 'requested'
+                      ? 'Sync requested'
+                      : syncState === 'error'
+                        ? 'Try sync again'
+                        : 'Sync now'}
+                </button>
+              )}
+              {(pairing || day?.lastSynced) && (
+                <div className="hero-status" aria-live="polite">
+                  <span className={`small-dot ${paired ? 'connected' : ''}`} />
+                  <span>
+                    {pairing
+                      ? 'Pairing your browser…'
+                      : `Last synced ${new Date(day!.lastSynced!).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`}
+                  </span>
+                  <span className="status-divider" />
+                  <ShieldCheck size={15} />
+                </div>
+              )}
             </div>
           )}
           <div className="hero-copy">
@@ -553,14 +591,10 @@ export function App() {
               {hour < 18 ? <Sun size={16} /> : <Moon size={16} />}
             </p>
             <p className="greeting-sub">
-              {page === 'settings'
-                ? ' '
-                : 'let\'s have another productive day'}
+              {page === 'settings' ? ' ' : "let's have another productive day"}
             </p>
             <h1>{title}</h1>
-            <div className="date-line">
-              {page === 'settings' ? '' : formatted}
-            </div>
+            <div className="date-line">{page === 'settings' ? '' : formatted}</div>
           </div>
         </header>
         <div className="content">

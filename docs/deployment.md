@@ -47,7 +47,7 @@ The default certificate covers the generated CloudFront hostname. A custom-domai
 
 1. Build and run the Go process with `NEMU_URL` set to the output `web_url`.
 2. Open the first-setup pairing link, or choose **Pair this browser** in the menu bar.
-3. Observe real app transitions for more than five minutes. Choose **Sync now** on macOS.
+3. Observe real app transitions for more than five minutes. Choose **Sync now** in the dashboard or on macOS.
 4. Refocus or reload the dashboard. Check the displayed last-sync timestamp and actual intervals.
 5. Verify a second use of the link fails. Check that an unpaired browser cannot query a day.
 6. Disconnect the network, collect activity, reconnect, and sync. The same queued batch must succeed once.
