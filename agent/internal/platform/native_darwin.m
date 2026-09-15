@@ -17,7 +17,7 @@ static NSMenuItem *statusLine;
 static NemuMenu *delegate;
 void nemu_init(void) {
  commands=[NSMutableArray new];[NSApplication sharedApplication];[NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
- delegate=[NemuMenu new];statusItem=[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];statusItem.button.title=@"ねむ";
+ delegate=[NemuMenu new];statusItem=[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];statusItem.button.title=@"nemu";
  NSMenu *menu=[NSMenu new];statusLine=[[NSMenuItem alloc] initWithTitle:@"● recording" action:nil keyEquivalent:@""];[menu addItem:statusLine];[menu addItem:[NSMenuItem separatorItem]];
  NSArray *titles=@[@"Open nemu",@"Sync now",@"Pause / Resume",@"Pair this browser",@"Quit"];
  for(int i=0;i<titles.count;i++){NSMenuItem *item=[[NSMenuItem alloc] initWithTitle:titles[i] action:@selector(action:) keyEquivalent:@""];item.target=delegate;item.tag=i+1;[menu addItem:item];}statusItem.menu=menu;

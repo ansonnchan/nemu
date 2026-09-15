@@ -2,9 +2,9 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import {
   ArrowRight,
+  ArrowLeftRight,
   ArrowUpRight,
   Check,
-  ChevronDown,
   Clock3,
   Coffee,
   History,
@@ -58,7 +58,10 @@ function Brand({ onHome }: { onHome: () => void }) {
         nemu
         <Leaf size={21} />
       </span>
-      <small>your day, remembered softly.</small>
+      <small>
+        a quieter day.
+        <br />a little room to breathe.
+      </small>
     </a>
   );
 }
@@ -86,24 +89,12 @@ function Sidebar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) 
         ))}
       </nav>
       <div className="sidebar-bottom">
-        <div className="plant" aria-hidden="true">
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <b />
-        </div>
-        <p>
-          a little less noise.
-          <br />a little more presence.
-        </p>
+        <p>one day at a time.</p>
+        <Illustration className="sidebar-art" />
         <div className="private-label">
           <ShieldCheck size={14} /> private by nature
         </div>
-        <span className="version">
-          nemu v1 <span lang="ja">· ねむ</span>
-        </span>
+        <span className="version">nemu v1</span>
       </div>
     </aside>
   );
@@ -152,7 +143,7 @@ function PairHelp({ onClose }: { onClose: () => void }) {
           <span>1</span>
           <div>
             <strong>Open nemu on your Mac</strong>
-            <p>Look for ねむ in your menu bar.</p>
+            <p>Look for nemu in your menu bar.</p>
           </div>
         </li>
         <li>
@@ -185,122 +176,116 @@ function SummaryCards({ day, hasData }: { day?: Day; hasData: boolean }) {
   const items = [
     {
       title: 'Active time',
-      jp: '使用時間',
       icon: Clock3,
       value: day ? duration(day.activeSeconds) : '—',
       detail: hasData
         ? `${Math.round((day!.activeSeconds / total) * 100)}% of recorded time`
-        : 'Time with your foreground app',
+        : 'Foreground app time',
       color: 'rose',
     },
     {
       title: 'Idle time',
-      jp: '離席時間',
       icon: Coffee,
       value: day ? duration(day.idleSeconds) : '—',
       detail: hasData
         ? `${Math.round((day!.idleSeconds / total) * 100)}% of recorded time`
-        : 'A little time away',
+        : 'Time away from your Mac',
       color: 'sand',
     },
     {
       title: 'Longest session',
-      jp: '最長セッション',
       icon: Star,
       value: day ? duration(day.longestSession.seconds) : '—',
       detail: day?.longestSession.appName
         ? `in ${day.longestSession.appName}`
-        : 'One app, one stretch of time',
+        : 'Your longest app session',
       color: 'gold',
     },
     {
       title: 'App switches',
-      jp: 'アプリ切替',
-      icon: ArrowRight,
+      icon: ArrowLeftRight,
       value: day ? String(day.appSwitches) : '—',
-      detail: hasData ? 'Foreground app changes' : 'The little transitions',
+      detail: hasData ? 'Foreground app changes' : 'Foreground app changes',
       color: 'sage',
     },
   ];
   return (
     <section className="metrics" aria-label="Day summary">
-      {items.map(({ title, jp, icon: Icon, value, detail, color }) => (
+      {items.map(({ title, icon: Icon, value, detail, color }) => (
         <article className="metric" key={title}>
           <div className="metric-top">
             <span className={`metric-icon ${color}`}>
               <Icon size={21} strokeWidth={1.6} />
             </span>
-            <span className="jp" lang="ja">
-              {jp}
-            </span>
           </div>
           <h2>{title}</h2>
           <strong className="metric-value">{value}</strong>
           <p>{detail}</p>
-          <div className={`metric-rule ${color}`} aria-hidden="true" />
         </article>
       ))}
     </section>
   );
 }
+// Ranking and bars describe uploaded foreground time; empty accounts keep the same table structure.
 function TopApps({ day, onAll }: { day?: Day; onAll: () => void }) {
   const apps = day?.apps ?? [];
   return (
-    <section className="panel apps-panel">
+    <section className="panel apps-panel" aria-labelledby="top-apps-title">
       <div className="panel-heading">
-        <h2>
-          Top apps <span lang="ja">よく使うアプリ</span>
-        </h2>
+        <h2 id="top-apps-title">Top apps</h2>
         {apps.length > 5 && (
           <button className="text-button" onClick={onAll}>
             View all <ArrowUpRight size={14} />
           </button>
         )}
       </div>
-      <div className="table-head">
-        <span>Application</span>
-        <span>Active time</span>
-        <span>Share</span>
+      <div className="apps-table-wrap">
+        <table className="apps-table">
+          <caption className="sr-only">Applications ranked by active foreground time</caption>
+          <thead>
+            <tr>
+              <th scope="col">
+                <span aria-hidden="true">#</span>
+                <span className="sr-only">Rank</span>
+              </th>
+              <th scope="col">App</th>
+              <th scope="col">Active time</th>
+              <th scope="col">%</th>
+              <th scope="col">
+                <span className="sr-only">Share of active time</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {apps.length ? (
+              apps.slice(0, 5).map((app, index) => (
+                <tr key={app.bundleId}>
+                  <td className="rank">{index + 1}</td>
+                  <th scope="row">{app.name}</th>
+                  <td>{duration(app.seconds)}</td>
+                  <td>{Math.round(app.percentage)}%</td>
+                  <td className="share-track">
+                    <span aria-hidden="true">
+                      <i className={`tone-${index % 4}`} style={{ width: `${app.percentage}%` }} />
+                    </span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="table-empty">
+                  <Monitor size={22} strokeWidth={1.3} aria-hidden="true" />
+                  <h3>Your everyday apps, gathered here.</h3>
+                  <p>App names and time will appear after a sync.</p>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
-      {apps.length ? (
-        <div className="app-rows">
-          {apps.slice(0, 5).map((app, index) => (
-            <div className="app-row" key={app.bundleId}>
-              <span className="app-name">
-                <span className={`app-avatar tone-${index % 4}`}>{app.name.slice(0, 1)}</span>
-                {app.name}
-              </span>
-              <span>{duration(app.seconds)}</span>
-              <span className="share">
-                <span>{Math.round(app.percentage)}%</span>
-                <i>
-                  <b style={{ width: `${app.percentage}%` }} />
-                </i>
-              </span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="empty-apps">
-          <span className="empty-icon">
-            <Monitor size={26} strokeWidth={1.2} />
-          </span>
-          <h3>A place for your everyday apps.</h3>
-          <p>
-            Your most-used apps will find their way here.
-            <br />
-            Only the app in front counts.
-          </p>
-          <div className="empty-lines" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </div>
-        </div>
-      )}
       <div className="panel-foot">
         <span className="small-dot" />
-        Foreground time, simply observed.
+        Only the app in front counts.
       </div>
     </section>
   );
@@ -318,17 +303,19 @@ function Timeline({
   return (
     <section className="panel timeline-panel">
       <div className="panel-heading">
-        <h2>
-          Timeline <span lang="ja">タイムライン</span>
-        </h2>
-        <span className="tag">{rows.length ? `${rows.length} moments` : 'Your day, in order'}</span>
+        <h2>Timeline</h2>
+        {rows.length > 8 && (
+          <button className="text-button" onClick={onExpand}>
+            {expanded ? 'Show less' : 'View all'}
+          </button>
+        )}
       </div>
       {rows.length ? (
         <>
           <ol className="timeline">
             {rows.slice(0, expanded ? undefined : 8).map((row) => (
               <li key={row.id} className={row.kind === 'idle' ? 'idle-row' : ''}>
-                <time>
+                <time dateTime={row.startedAt}>
                   {new Date(row.startedAt).toLocaleTimeString([], {
                     hour: 'numeric',
                     minute: '2-digit',
@@ -349,36 +336,23 @@ function Timeline({
               </li>
             ))}
           </ol>
-          {rows.length > 8 && (
-            <button className="text-button timeline-more" onClick={onExpand}>
-              {expanded ? 'Show less' : 'See the whole day'} <ChevronDown size={15} />
-            </button>
-          )}
         </>
       ) : (
         <div className="empty-timeline">
-          <div className="timeline-illustration" aria-hidden="true">
-            <div className="dotted-line" />
-            <span>
-              <Sun size={17} />
-            </span>
-            <i />
-            <i />
-            <span>
-              <Moon size={15} />
-            </span>
-          </div>
+          <span className="empty-time-mark" aria-hidden="true">
+            <Clock3 size={22} strokeWidth={1.3} />
+          </span>
           <h3>
-            {day?.archived ? 'The details have faded softly.' : 'Every day has its own rhythm.'}
+            {day?.archived ? 'The details have faded softly.' : 'A little space for your day.'}
           </h3>
           <p>
             {day?.archived ? (
               'Detailed timelines expire after 30 days. Your saved totals are still here.'
             ) : (
               <>
-                Your apps, pauses, and little transitions
+                Your apps and pauses, in order.
                 <br />
-                will appear here after a sync.
+                Here after your next sync.
               </>
             )}
           </p>
@@ -399,12 +373,8 @@ function Reflection() {
     <section className="reflection">
       <Illustration />
       <div>
-        <span className="eyebrow">A QUIETER KIND OF JOURNAL</span>
-        <p>
-          Not more to do.
-          <br />
-          Just a little room to reflect.
-        </p>
+        <h2>a little room to reflect.</h2>
+        <p>Your day, remembered softly.</p>
         <span className="reflection-leaf">
           <i />
           <Leaf size={16} />
@@ -486,6 +456,44 @@ function SettingsPage({
       </p>
     </section>
   );
+}
+// Pairing stays beneath the date, rather than taking a full-width row away from the journal.
+function JournalNotice({
+  state,
+  pairing,
+  onPair,
+}: {
+  state: LoadState;
+  pairing: boolean;
+  onPair: () => void;
+}) {
+  if (state.kind === 'unpaired')
+    return (
+      <div className="journal-notice">
+        <p>Your journal is ready when you are.</p>
+        <button className="text-button" onClick={onPair}>
+          Pair your Mac <ArrowUpRight size={13} />
+        </button>
+      </div>
+    );
+  if (state.kind === 'loading')
+    return (
+      <div className="journal-notice" role="status">
+        <LoaderCircle size={13} className="spin" />
+        <p>{pairing ? 'Connecting your browser…' : 'Opening your journal…'}</p>
+      </div>
+    );
+  if (state.kind === 'ready' && state.day.activeSeconds + state.day.idleSeconds === 0)
+    return (
+      <div className="journal-notice">
+        <p>
+          <span className="small-dot connected" /> nemu is listening quietly.
+          <br />
+          <span className="notice-detail">Your day will appear after the next sync.</span>
+        </p>
+      </div>
+    );
+  return null;
 }
 export function App() {
   const [zone, setZone] = useState(browserZone);
@@ -578,7 +586,7 @@ export function App() {
       </a>
       <Sidebar page={page} setPage={navigate} />
       <main id="main">
-        <header className="hero">
+        <header className={`hero ${page === 'settings' ? 'settings-hero' : ''}`}>
           <Illustration className="hero-art" />
           <div className="hero-status">
             <span className={`small-dot ${paired ? 'connected' : ''}`} />
@@ -604,17 +612,14 @@ export function App() {
                 ? 'simple by design. private by nature.'
                 : 'hope you have a peaceful day.'}
             </p>
-            <h1>
-              {title}
-              <span lang="ja">{page === 'today' ? '今日' : ''}</span>
-            </h1>
+            <h1>{title}</h1>
             <div className="date-line">
               {page === 'settings' ? 'Your journal. Your rhythm.' : formatted}
             </div>
+            {page === 'today' && (
+              <JournalNotice state={state} pairing={pairing} onPair={() => setPairOpen(true)} />
+            )}
           </div>
-          <span className="hero-note">
-            one day at a time <Leaf size={14} />
-          </span>
         </header>
         <div className="content">
           {page === 'settings' ? (
@@ -626,34 +631,6 @@ export function App() {
             />
           ) : (
             <>
-              {state.kind === 'unpaired' && (
-                <section className="connection-banner">
-                  <span className="banner-icon">
-                    <Link2 size={22} />
-                  </span>
-                  <div>
-                    <h2>Your journal begins with a small connection.</h2>
-                    <p>Pair your Mac to remember your digital day. No account needed.</p>
-                  </div>
-                  <button className="button primary" onClick={() => setPairOpen(true)}>
-                    Pair your Mac <ArrowUpRight size={16} />
-                  </button>
-                </section>
-              )}
-              {state.kind === 'ready' && !hasData && (
-                <section className="connection-banner listening">
-                  <span className="banner-icon">
-                    <Leaf size={23} />
-                  </span>
-                  <div>
-                    <h2>nemu is listening quietly.</h2>
-                    <p>Your day will appear after the next sync.</p>
-                  </div>
-                  <span className="tag">
-                    <span className="small-dot connected" /> Paired with your Mac
-                  </span>
-                </section>
-              )}
               {state.kind === 'error' && (
                 <section className="connection-banner error" role="alert">
                   <span className="banner-icon">
@@ -674,12 +651,6 @@ export function App() {
                   </button>
                 </section>
               )}
-              {state.kind === 'loading' && (
-                <div className="loading-notice" role="status">
-                  <LoaderCircle size={16} className="spin" />
-                  {pairing ? 'Making a small connection…' : 'Opening your journal…'}
-                </div>
-              )}
               <SummaryCards day={day} hasData={hasData} />
               <div className="detail-grid">
                 <div className="left-column">
@@ -695,7 +666,7 @@ export function App() {
               <Leaf size={13} /> your day, remembered softly.
             </span>
             <span>
-              Made for a little peace of mind <span lang="ja">ねむ</span>
+              <ShieldCheck size={13} /> private by nature
             </span>
           </footer>
         </div>

@@ -1,4 +1,4 @@
-# nemu · ねむ
+# nemu
 
 nemu records foreground application identity and time on macOS (for now), keeps a durable local buffer, and syncs hourly to a paired browser dashboard.
 
@@ -78,7 +78,7 @@ go build -o nemu ./cmd/nemu
 NEMU_URL=https://YOUR_CLOUDFRONT_DOMAIN ./nemu
 ```
 
-The first successful registration opens a private pairing link. You can also choose **Pair this browser** from the ねむ menu-bar item. The link expires after ten minutes and works once. Your browser never receives the permanent device secret.
+The first successful registration opens a private pairing link. You can also choose **Pair this browser** from the nemu menu-bar item. The link expires after ten minutes and works once. Your browser never receives the permanent device secret.
 
 Menu actions: **Open nemu**, **Sync now**, **Pause / Resume**, **Pair this browser**, **Quit**. The menu shows recording state and last sync age. Pausing persists across restarts. If Keychain is locked, unlock it and restart; existing credentials are preserved.
 
