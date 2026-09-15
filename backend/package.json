@@ -1,0 +1,26 @@
+{
+  "name": "@nemu/backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && esbuild src/lambda.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/index.cjs",
+    "check": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "dev": "node --import tsx src/dev.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.922.0",
+    "@aws-sdk/client-s3": "^3.922.0",
+    "@aws-sdk/lib-dynamodb": "^3.922.0",
+    "luxon": "^3.7.2",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.159",
+    "@types/luxon": "^3.7.1",
+    "@types/node": "^22.19.0",
+    "esbuild": "^0.25.12",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
