@@ -179,26 +179,12 @@ main {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 82%;
+  width: 55%;
   height: 100%;
   object-fit: cover;
   object-position: center center;
   opacity: 1;
   filter: saturate(0.78) contrast(0.94) brightness(1.04);
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0, 0, 0, 0.2) 6%,
-    rgba(0, 0, 0, 0.76) 15%,
-    #000 24%
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0, 0, 0, 0.2) 6%,
-    rgba(0, 0, 0, 0.76) 15%,
-    #000 24%
-  );
   z-index: 0;
 }
 .hero-copy {
@@ -959,7 +945,7 @@ dialog p {
     min-height: 471px;
   }
   .hero-art {
-    width: 82%;
+    width: 55%;
   }
 }
 @media (max-width: 1150px) {
@@ -987,7 +973,7 @@ dialog p {
     font-size: 78px;
   }
   .hero-art {
-    width: 84%;
+    width: 62%;
     opacity: 1;
   }
   .hero-status {
@@ -1084,7 +1070,7 @@ dialog p {
     font-size: 74px;
   }
   .hero-art {
-    width: 92%;
+    width: 72%;
     opacity: 1;
   }
   .metrics {
