@@ -549,17 +549,17 @@ export function App() {
           )}
           <div className="hero-copy">
             <p className="greeting">
-              {page === 'settings' ? 'a few things, just for you' : `${greeting},`}{' '}
+              {page === 'settings' ? 'one for you, one for me' : `${greeting},`}{' '}
               {hour < 18 ? <Sun size={16} /> : <Moon size={16} />}
             </p>
             <p className="greeting-sub">
               {page === 'settings'
-                ? 'simple by design. private by nature.'
-                : 'hope you have a peaceful day.'}
+                ? ' '
+                : 'let\'s have another productive day'}
             </p>
             <h1>{title}</h1>
             <div className="date-line">
-              {page === 'settings' ? 'Your journal. Your rhythm.' : formatted}
+              {page === 'settings' ? '' : formatted}
             </div>
           </div>
         </header>
