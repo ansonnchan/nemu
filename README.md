@@ -4,7 +4,7 @@ nemu records foreground application identity and time on macOS (for now), keeps 
 
 ## A quieter dashboard
 
-The web experience uses warm ivory surfaces, soft sage accents, and dedicated anime artwork for the hero, reflection card, and sidebar. New devices begin with an empty journal. There is no demo dataset.
+The web experience uses warm ivory surfaces, soft sage accents, and dedicated anime artwork in the hero. New devices begin with an empty journal. There is no demo dataset.
 
 <!-- Screenshot slot: replace this artwork with a screenshot of your own empty dashboard. -->
 
@@ -137,7 +137,7 @@ Detailed cloud activity expires after 30 days from ingestion. Saved aggregate su
 
 Go · Objective-C/cgo · React · TypeScript · Vite · Lambda · API Gateway · S3 · DynamoDB · CloudFront · Terraform.
 
-Fonts and the three region-specific dashboard illustrations are bundled locally under `web/public/assets`.
+Fonts and the dashboard’s hero illustration are bundled locally under `web/public/assets`.
 
 ## V2
 

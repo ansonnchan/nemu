@@ -118,16 +118,6 @@ svg {
   fill: #979b8022;
   transform: rotate(-13deg);
 }
-.brand small {
-  display: block;
-  margin-top: 9px;
-  font:
-    13px/1.65 'Bradley Hand',
-    'Segoe Print',
-    cursive;
-  letter-spacing: 1px;
-  color: #8e7d70;
-}
 .sidebar nav {
   display: flex;
   flex-direction: column;
@@ -172,18 +162,6 @@ svg {
   margin-bottom: 290px;
   transform: rotate(-5deg);
 }
-.sidebar-art {
-  position: absolute;
-  left: -37px;
-  bottom: -23px;
-  width: calc(100% + 74px);
-  height: 300px;
-  object-fit: cover;
-  object-position: center 72%;
-  opacity: 0.98;
-  mask-image: linear-gradient(0deg, #000 0 84%, transparent 100%);
-  pointer-events: none;
-}
 main {
   width: 100%;
   min-width: 0;
@@ -201,23 +179,17 @@ main {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 86%;
+  width: 73%;
   height: 100%;
   object-fit: cover;
   object-position: center center;
   opacity: 1;
-  z-index: -2;
-  mask-image: linear-gradient(90deg, transparent 0, #000 15%);
-}
-.hero:after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, #faf7f2 0, #faf7f2 12%, #faf7f2b8 21%, transparent 32%);
-  z-index: -1;
-  pointer-events: none;
+  filter: saturate(0.78) contrast(0.94) brightness(1.04);
+  z-index: 0;
 }
 .hero-copy {
+  position: relative;
+  z-index: 1;
   padding: 57px 46px 0;
   width: max-content;
   max-width: 100%;
@@ -281,6 +253,7 @@ h1 > span {
   background: #f5ece2d6;
   border: 1px solid #f8f3ed99;
   backdrop-filter: blur(8px);
+  z-index: 2;
 }
 .status-divider {
   height: 12px;
@@ -302,45 +275,8 @@ h1 > span {
 .small-dot.connected {
   background: #939e7f;
 }
-.journal-notice {
-  min-height: 37px;
-  margin-top: 14px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  font-size: 11px;
-  line-height: 1.7;
-  color: #887567;
-  max-width: 350px;
-}
-.journal-notice .text-button {
-  font-size: 11px;
-  padding: 0;
-  border-bottom: 1px solid #c9b6a5;
-  border-radius: 0;
-  color: #816755;
-}
-.journal-notice .small-dot {
-  height: 5px;
-  width: 5px;
-  margin-right: 4px;
-}
-.notice-detail {
-  font-size: 10px;
-  color: #8a7b6b;
-}
-.spin {
-  animation: spin 1.4s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-/* Pairing sits above these cards, so their position no longer depends on account setup. */
 .content {
-  padding: 0 14px;
+  padding: 12px 14px 0;
 }
 .metrics {
   display: grid;
@@ -416,12 +352,6 @@ h1 > span {
   grid-template-columns: 1.1fr 1fr;
   gap: 10px;
 }
-.left-column {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
 .panel {
   background: linear-gradient(120deg, #fffdf9, #fefbf7);
   border: 1px solid #eadfd5;
@@ -485,7 +415,7 @@ h1 > span {
 }
 /* A real ranked table and quiet progress bars match the reference without inventing data. */
 .apps-panel {
-  min-height: 304px;
+  min-height: 471px;
   display: flex;
   flex-direction: column;
 }
@@ -769,64 +699,6 @@ h1 > span {
 .empty-timeline-placeholder i:nth-child(3) {
   width: 72%;
 }
-.reflection {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  height: 152px;
-  overflow: hidden;
-  border: 1px solid #e9dfd3;
-  border-radius: 12px;
-  padding: 10px;
-  background: linear-gradient(100deg, #f7f0e7, #fcf9f4);
-  box-shadow: 0 3px 12px #78594303;
-}
-.reflection > img {
-  width: 43%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 53%;
-  border-radius: 6px;
-  opacity: 1;
-}
-.reflection-copy {
-  padding-right: 8px;
-}
-.reflection h2 {
-  font-family: 'DM Sans Variable', sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  color: #816354;
-  line-height: 1.6;
-}
-.reflection p {
-  font-size: 12px;
-  line-height: 1.8;
-  color: #947d6e;
-  margin-top: 7px;
-}
-.reflection-leaf {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #9ba083;
-  margin-top: 16px;
-}
-.reflection-leaf i {
-  height: 1px;
-  width: 100px;
-  background: #ded2c3;
-}
-.reflection-note {
-  margin-left: auto;
-  padding: 0 15px 0 2px;
-  font:
-    14px/1.45 'Bradley Hand',
-    'Segoe Print',
-    cursive;
-  color: #a58a7a;
-  transform: rotate(-5deg);
-}
 /* Failures remain actionable, but normal onboarding never takes a full dashboard row. */
 .connection-banner.error {
   display: flex;
@@ -1067,16 +939,13 @@ dialog p {
     gap: 12px;
   }
   .apps-panel {
-    min-height: 304px;
-  }
-  .reflection {
-    height: 152px;
+    min-height: 471px;
   }
   .timeline-panel {
     min-height: 471px;
   }
   .hero-art {
-    width: 86%;
+    width: 73%;
   }
 }
 @media (max-width: 1150px) {
@@ -1091,9 +960,6 @@ dialog p {
   }
   .brand > span {
     font-size: 35px;
-  }
-  .brand small {
-    font-size: 10px;
   }
   .nav-item {
     gap: 13px;
@@ -1116,7 +982,7 @@ dialog p {
     font-size: 9px;
   }
   .content {
-    padding: 0 14px;
+    padding: 12px 14px 0;
   }
   .metric {
     padding: 18px 17px;
@@ -1177,18 +1043,6 @@ dialog p {
   .timeline li > div > span:last-child {
     font-size: 11px;
   }
-  .reflection {
-    gap: 13px;
-  }
-  .reflection h2 {
-    font-size: 13px;
-  }
-  .reflection p {
-    font-size: 11px;
-  }
-  .reflection-leaf i {
-    width: 65px;
-  }
   .empty-timeline {
     margin-left: 27px;
     margin-right: 17px;
@@ -1205,9 +1059,6 @@ dialog p {
   .brand > span {
     font-size: 32px;
   }
-  .brand small {
-    font-size: 9px;
-  }
   .nav-item {
     gap: 11px;
     font-size: 12px;
@@ -1220,8 +1071,7 @@ dialog p {
   }
   .hero-art {
     width: 86%;
-    opacity: 0.9;
-    mask-image: linear-gradient(90deg, transparent 8%, #000 45%);
+    opacity: 1;
   }
   .metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1243,26 +1093,8 @@ dialog p {
   .timeline-panel {
     min-height: 320px;
   }
-  .left-column {
-    gap: 14px;
-  }
   .apps-panel {
-    min-height: 295px;
-  }
-  .reflection {
-    height: 140px;
-  }
-  .reflection > img {
-    width: 38%;
-  }
-  .reflection h2 {
-    font-size: 16px;
-  }
-  .reflection p {
-    font-size: 12px;
-  }
-  .reflection-note {
-    display: none;
+    min-height: 320px;
   }
   .timeline {
     padding: 0 22px 22px;
@@ -1321,7 +1153,6 @@ dialog p {
     width: 16px;
     height: 16px;
   }
-  .brand small,
   .sidebar-bottom {
     display: none;
   }
@@ -1348,11 +1179,7 @@ dialog p {
   }
   .hero-art {
     width: 100%;
-    opacity: 0.78;
-    mask-image: linear-gradient(90deg, transparent, #000 60%);
-  }
-  .hero:after {
-    background: linear-gradient(90deg, #faf7f2d9, #faf7f255 70%, transparent);
+    opacity: 1;
   }
   .hero-status {
     top: 14px;
@@ -1374,17 +1201,8 @@ dialog p {
   .date-line {
     font-size: 12px;
   }
-  .journal-notice {
-    margin-top: 12px;
-    font-size: 10px;
-    max-width: 290px;
-    gap: 1px 10px;
-  }
-  .journal-notice .text-button {
-    font-size: 10px;
-  }
   .content {
-    padding: 0 15px;
+    padding: 12px 15px 0;
   }
   .metrics {
     gap: 10px;
@@ -1444,19 +1262,6 @@ dialog p {
   }
   .share-track > span {
     height: 7px;
-  }
-  .reflection {
-    height: 136px;
-    gap: 14px;
-  }
-  .reflection > img {
-    width: 40%;
-  }
-  .reflection h2 {
-    font-size: 13px;
-  }
-  .reflection p {
-    font-size: 11px;
   }
   .timeline li {
     grid-template-columns: 68px minmax(0, 1fr);

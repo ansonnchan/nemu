@@ -28,6 +28,7 @@ function respond(body: unknown, status = 200) {
 test('unpaired state offers a real pairing workflow', async () => {
   respond({ error: 'Pair your device' }, 401);
   render(<App />);
+  fireEvent.click(screen.getByRole('button', { name: 'Settings' }));
   fireEvent.click(await screen.findByRole('button', { name: /Pair your Mac/ }));
   expect(screen.getByRole('dialog')).toBeInTheDocument();
   expect(screen.getByText('Choose “Pair this browser”')).toBeInTheDocument();
@@ -35,18 +36,11 @@ test('unpaired state offers a real pairing workflow', async () => {
 test('paired empty state contains no fabricated activity', async () => {
   respond(empty);
   const { container } = render(<App />);
-  expect(await screen.findByText('nemu is listening quietly.')).toBeInTheDocument();
-  expect(screen.getAllByText('0m')).toHaveLength(3);
+  expect(await screen.findAllByText('0m')).toHaveLength(3);
   expect(screen.queryByRole('button', { name: 'Sync now' })).not.toBeInTheDocument();
   expect(
     Array.from(container.querySelectorAll('img'), (image) => image.getAttribute('src')),
-  ).toEqual(
-    expect.arrayContaining([
-      '/assets/nemu-hero-anime-reference.png',
-      '/assets/nemu-reflection-anime-reference.png',
-      '/assets/nemu-sidebar-anime-reference.png',
-    ]),
-  );
+  ).toEqual(['/assets/nemu-hero-anime-reference.png']);
 });
 test('populated day renders uploaded metrics and idle deliberately', async () => {
   respond({
@@ -84,7 +78,7 @@ test('network failure has an actionable retry', async () => {
 test('navigation contains only Today and Settings and keeps today selected on return', async () => {
   respond(empty);
   render(<App />);
-  await screen.findByText('nemu is listening quietly.');
+  await screen.findAllByText('0m');
   expect(screen.queryByRole('button', { name: 'History' })).not.toBeInTheDocument();
   expect(screen.queryByLabelText('Choose a day')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Settings' }));

@@ -11,7 +11,6 @@ import {
   Home,
   Leaf,
   Link2,
-  LoaderCircle,
   LockKeyhole,
   Monitor,
   Moon,
@@ -39,20 +38,15 @@ function pairOnce() {
     body: JSON.stringify({ token: initialPair }),
   }));
 }
-const artwork = {
-  hero: '/assets/nemu-hero-anime-reference.png',
-  reflection: '/assets/nemu-reflection-anime-reference.png',
-  sidebar: '/assets/nemu-sidebar-anime-reference.png',
-} as const;
-// Each region uses the supplied reference crop while remaining decorative to assistive technology.
-function Illustration({
-  kind,
-  className = '',
-}: {
-  kind: keyof typeof artwork;
-  className?: string;
-}) {
-  return <img className={className} src={artwork[kind]} alt="" aria-hidden="true" />;
+function HeroIllustration() {
+  return (
+    <img
+      className="hero-art"
+      src="/assets/nemu-hero-anime-reference.png"
+      alt=""
+      aria-hidden="true"
+    />
+  );
 }
 function Brand({ onHome }: { onHome: () => void }) {
   return (
@@ -69,10 +63,6 @@ function Brand({ onHome }: { onHome: () => void }) {
         nemu
         <Leaf size={21} />
       </span>
-      <small>
-        a quieter day.
-        <br />a brighter you.
-      </small>
     </a>
   );
 }
@@ -106,7 +96,6 @@ function Sidebar({ page, setPage }: { page: Page; setPage: (p: Page) => void }) 
           still make
           <br />a brighter tomorrow.
         </p>
-        <Illustration kind="sidebar" className="sidebar-art" />
       </div>
     </aside>
   );
@@ -387,30 +376,6 @@ function Timeline({
     </section>
   );
 }
-function Reflection() {
-  return (
-    <section className="reflection">
-      <Illustration kind="reflection" />
-      <div className="reflection-copy">
-        <h2>another day, well spent.</h2>
-        <p>
-          It’s not about doing more,
-          <br />
-          but about being present.
-        </p>
-        <span className="reflection-leaf">
-          <i />
-          <Leaf size={16} />
-        </span>
-      </div>
-      <p className="reflection-note">
-        same human,
-        <br />
-        brighter tomorrow.
-      </p>
-    </section>
-  );
-}
 function SettingsPage({
   paired,
   onDisconnect,
@@ -485,44 +450,6 @@ function SettingsPage({
     </section>
   );
 }
-// Pairing stays beneath the date, rather than taking a full-width row away from the journal.
-function JournalNotice({
-  state,
-  pairing,
-  onPair,
-}: {
-  state: LoadState;
-  pairing: boolean;
-  onPair: () => void;
-}) {
-  if (state.kind === 'unpaired')
-    return (
-      <div className="journal-notice">
-        <p>Your journal is ready when you are.</p>
-        <button className="text-button" onClick={onPair}>
-          Pair your Mac <ArrowUpRight size={13} />
-        </button>
-      </div>
-    );
-  if (state.kind === 'loading')
-    return (
-      <div className="journal-notice" role="status">
-        <LoaderCircle size={13} className="spin" />
-        <p>{pairing ? 'Connecting your browser…' : 'Opening your journal…'}</p>
-      </div>
-    );
-  if (state.kind === 'ready' && state.day.activeSeconds + state.day.idleSeconds === 0)
-    return (
-      <div className="journal-notice">
-        <p>
-          <span className="small-dot connected" /> nemu is listening quietly.
-          <br />
-          <span className="notice-detail">Your day will appear after the next sync.</span>
-        </p>
-      </div>
-    );
-  return null;
-}
 export function App() {
   const [zone, setZone] = useState(browserZone);
   const [page, setPage] = useState<Page>('today');
@@ -591,7 +518,7 @@ export function App() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'good morning' : hour < 18 ? 'good afternoon' : 'good evening';
   const formatted = new Date(selected + 'T12:00:00').toLocaleDateString('en-US', {
-    weekday: 'long',
+    weekday: 'short',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
@@ -615,21 +542,19 @@ export function App() {
       <Sidebar page={page} setPage={navigate} />
       <main id="main">
         <header className={`hero ${page === 'settings' ? 'settings-hero' : ''}`}>
-          <Illustration kind="hero" className="hero-art" />
-          <div className="hero-status">
-            <span className={`small-dot ${paired ? 'connected' : ''}`} />
-            <span>
-              {pairing
-                ? 'Pairing your browser…'
-                : day?.lastSynced
-                  ? `Last synced ${new Date(day.lastSynced).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`
-                  : paired
-                    ? 'Waiting for the first sync'
-                    : 'A quiet space for your day'}
-            </span>
-            <span className="status-divider" />
-            <ShieldCheck size={15} />
-          </div>
+          <HeroIllustration />
+          {(pairing || day?.lastSynced) && (
+            <div className="hero-status">
+              <span className={`small-dot ${paired ? 'connected' : ''}`} />
+              <span>
+                {pairing
+                  ? 'Pairing your browser…'
+                  : `Last synced ${new Date(day!.lastSynced!).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`}
+              </span>
+              <span className="status-divider" />
+              <ShieldCheck size={15} />
+            </div>
+          )}
           <div className="hero-copy">
             <p className="greeting">
               {page === 'settings' ? 'a few things, just for you' : `${greeting},`}{' '}
@@ -644,9 +569,6 @@ export function App() {
             <div className="date-line">
               {page === 'settings' ? 'Your journal. Your rhythm.' : formatted}
             </div>
-            {page === 'today' && (
-              <JournalNotice state={state} pairing={pairing} onPair={() => setPairOpen(true)} />
-            )}
           </div>
         </header>
         <div className="content">
@@ -681,10 +603,7 @@ export function App() {
               )}
               <SummaryCards day={day} hasData={hasData} />
               <div className="detail-grid">
-                <div className="left-column">
-                  <TopApps day={day} onAll={() => setAllApps(true)} />
-                  <Reflection />
-                </div>
+                <TopApps day={day} onAll={() => setAllApps(true)} />
                 <Timeline day={day} expanded={expanded} onExpand={() => setExpanded((v) => !v)} />
               </div>
             </>
