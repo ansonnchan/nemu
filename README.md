@@ -1,10 +1,10 @@
 # nemu
 
-nemu records foreground application identity and time on macOS (for now), keeps a durable local buffer, and syncs hourly to a paired browser dashboard.
+nemu records foreground application identity and time on macOS, keeps a durable local buffer, and syncs hourly to a paired browser dashboard.
 
-## A quieter dashboard
+> There are plans to support Windows and Linux as well as create a browser extension in Chrome, Safari etc. to differentiate websites e.g. Youtube, Wikipedia, or even ansonnchan.dev 
 
-The web experience uses warm ivory surfaces, soft sage accents, and dedicated anime artwork in the hero. New devices begin with an empty journal. There is no demo dataset.
+## Video Demo
 
 ![nemu dashboard syncing a recorded day](web/public/assets/nemu-demo.gif)
 
@@ -135,7 +135,7 @@ Detailed cloud activity expires after 30 days from ingestion. Saved aggregate su
 
 Go · Objective-C/cgo · React · TypeScript · Vite · Lambda · API Gateway · S3 · DynamoDB · CloudFront · Terraform.
 
-Fonts and the dashboard’s hero illustration are bundled locally under `web/public/assets`.
+
 
 ## V2
 
