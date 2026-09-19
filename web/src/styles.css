@@ -1203,14 +1203,30 @@ dialog p {
     width: 15px;
   }
   .hero {
-    height: 304px;
+    height: 276px;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      rgba(249, 245, 239, 0.88) 0%,
+      rgba(249, 245, 239, 0.7) 34%,
+      rgba(249, 245, 239, 0.18) 68%,
+      transparent 100%
+    );
   }
   .hero-copy {
-    padding: 62px 24px 0;
+    padding: 49px 24px 0;
   }
   .hero-art {
     width: 100%;
+    height: calc(100% + 28px);
     opacity: 1;
+    object-position: center center;
   }
   .hero-actions {
     top: 14px;
@@ -1225,8 +1241,9 @@ dialog p {
     font-size: 12px;
   }
   .hero h1 {
-    font-size: 73px;
-    margin-top: 19px;
+    font-size: clamp(54px, 15vw, 64px);
+    letter-spacing: -3px;
+    margin-top: 11px;
   }
   .hero h1 > span {
     font-size: 9px;
@@ -1243,7 +1260,7 @@ dialog p {
   }
   .metric {
     padding: 18px 16px;
-    min-height: 170px;
+    min-height: 160px;
   }
   .metric-icon {
     height: 39px;
@@ -1307,10 +1324,10 @@ dialog p {
     font-size: 10px;
   }
   .settings-hero {
-    height: 254px;
+    height: 246px;
   }
   .settings-hero h1 {
-    font-size: 60px;
+    font-size: 54px;
   }
   .setting-row {
     padding: 21px;
